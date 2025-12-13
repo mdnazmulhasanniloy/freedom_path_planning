@@ -1,0 +1,243 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+
+//user schema
+model User {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  email       String   @unique
+  password    String
+  status      status   @default(active)
+  role        Role     @default(user)
+  profile     String?
+  phoneNumber String?
+  customerId String?
+  expireAt    DateTime? @default(now())
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  verification     Verification? 
+  deviceHistory    DeviceHistory[] 
+}
+
+model DeviceHistory {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  ip        String?
+  browser   String?
+  os        String?
+  device    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Verification { 
+  userId    String   @map("_id") @db.ObjectId
+  otp       Int
+  expiredAt DateTime?
+  status    Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@id([userId])
+}
+
+//service model
+model Service {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  serviceName String
+  Title String
+  subTitle String 
+  image String 
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+}
+
+ 
+model Associates {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  photo String
+  bio String
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+model Testimonial{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  clientName String
+  designation String 
+  clientPhoto String
+  description String
+  rating Float
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ToolResource{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  details String 
+  link String  
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BookResources {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  details String
+  image String 
+  file String
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Books {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String 
+  price Int 
+  downloads Int @default(0)
+  image String
+  file String
+  details String
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Blog {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String 
+  subTitle String
+  image String 
+  details String
+  view Int @default(0)
+  isVisible Boolean @default(true) 
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+//contents
+model Contents {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  termsAndCondition String
+  privacyPolicy     String 
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+ @@map("contents")
+}
+
+// service page contents "What Your Client Gets" Section
+model WhatYourClientGets {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  image String 
+  key     String @unique @default("main")
+
+
+  options WhatYourClientGetsItem[]
+
+}
+
+model WhatYourClientGetsItem {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  subTitle String
+
+  parentId  String   @db.ObjectId
+  parent    WhatYourClientGets @relation(fields: [parentId], references: [id], onDelete: Cascade)
+}
+ 
+ 
+// service page contents "include Services"
+
+model includedService {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  subTitle String
+}
+
+
+// about us Page Contents
+
+// 1. heroSection
+model aboutHeroSection {
+  id String @id @default(auto()) @map("_id")  @db.ObjectId
+  title String 
+  subTitle String
+  projects Int 
+  experience Int 
+  clientReview Int  
+  description String 
+  banner String
+}
+
+// 2. freedom path planning
+model freedomPathPlaning {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  title String
+  banner String
+  options freedomPathPlaningItem[]
+}
+
+
+model freedomPathPlaningItem {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  subTitle String
+
+  parentId  String   @db.ObjectId
+  parent    freedomPathPlaning @relation(fields: [parentId], references: [id], onDelete: Cascade)
+}
+
+
+// 3. about steve deray
+model aboutSteveDeray {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  banner String 
+  title String 
+  bio String
+}
+
+
+enum status {
+  active
+  blocked
+}
+
+enum Role {
+  admin
+  sub_admin
+  supper_admin
+  user
+}
+
+ 
+ 
