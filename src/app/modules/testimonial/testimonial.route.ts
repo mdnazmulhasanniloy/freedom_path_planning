@@ -13,16 +13,16 @@ router.post(
   '/',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
   uploads.single('clientPhoto'),
-  uploadSingle('clientPhoto'),
   parseData(),
+  uploadSingle('clientPhoto'),
   testimonialController.createTestimonial,
 );
 router.patch(
   '/:id',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
   uploads.single('clientPhoto'),
-  uploadSingle('clientPhoto'),
   parseData(),
+  uploadSingle('clientPhoto'),
   testimonialController.updateTestimonial,
 );
 router.delete(

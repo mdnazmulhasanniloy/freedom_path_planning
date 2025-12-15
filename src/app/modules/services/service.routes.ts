@@ -13,8 +13,8 @@ router.post(
   '/',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
   uploads.single('image'),
-  uploadSingle('image'),
   parseData(),
+  uploadSingle('image'),
   serviceController.createService,
 );
 
@@ -22,8 +22,8 @@ router.patch(
   '/:id',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
   uploads.single('image'),
-  uploadSingle('image'),
   parseData(),
+  uploadSingle('image'),
   serviceController.updateService,
 );
 

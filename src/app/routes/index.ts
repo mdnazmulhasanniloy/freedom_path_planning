@@ -1,5 +1,6 @@
 import { associatesRoutes } from '@app/modules/associates/associates.route';
 import { authRoutes } from '@app/modules/auth/auth.route';
+import { bookResourcesRoutes } from '@app/modules/bookResources/bookResources.route';
 import { contentsRoutes } from '@app/modules/contents/contents.route';
 import { otpRoutes } from '@app/modules/otp/otp.routes';
 import serviceRouter from '@app/modules/services/service.routes';
@@ -10,6 +11,10 @@ import { Router } from 'express';
 
 const router = Router();
 const moduleRoutes = [
+  {
+    path: '/book-resources',
+    route: bookResourcesRoutes,
+  },
   {
     path: '/tool-resource',
     route: toolResourceRoutes,
