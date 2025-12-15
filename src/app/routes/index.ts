@@ -1,22 +1,26 @@
+import { associatesRoutes } from '@app/modules/associates/associates.route';
 import { authRoutes } from '@app/modules/auth/auth.route';
 import { contentsRoutes } from '@app/modules/contents/contents.route';
 import { otpRoutes } from '@app/modules/otp/otp.routes';
 import serviceRouter from '@app/modules/services/service.routes';
+import { testimonialRoutes } from '@app/modules/testimonial/testimonial.route';
+import { toolResourceRoutes } from '@app/modules/toolResource/toolResource.route';
 import { userRoutes } from '@app/modules/users/users.routes';
 import { Router } from 'express';
-
-import { associatesRoutes } from "../modules/associates/associates.route";
-
-import { testimonialRoutes } from "../modules/testimonial/testimonial.route";
 
 const router = Router();
 const moduleRoutes = [
   {
-    path: "/testimonial",
+    path: '/tool-resource',
+    route: toolResourceRoutes,
+  },
+
+  {
+    path: '/testimonial',
     route: testimonialRoutes,
   },
   {
-    path: "/associates",
+    path: '/associates',
     route: associatesRoutes,
   },
   {
