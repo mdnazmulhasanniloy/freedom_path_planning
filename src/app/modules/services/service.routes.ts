@@ -4,6 +4,7 @@ import multer, { memoryStorage } from 'multer';
 import parseData from '@app/middleware/parseData';
 import auth from '@app/middleware/auth';
 import { USER_ROLE } from '../users/user.constants';
+import uploadSingle from '@app/middleware/uploadSingle';
 
 const router = Router();
 const uploads = multer({ storage: memoryStorage() });
@@ -12,7 +13,8 @@ router.post(
   '/',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
   uploads.single('image'),
-  parseData(), 
+  uploadSingle('image'),
+  parseData(),
   serviceController.createService,
 );
 
@@ -20,6 +22,7 @@ router.patch(
   '/:id',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
   uploads.single('image'),
+  uploadSingle('image'),
   parseData(),
   serviceController.updateService,
 );

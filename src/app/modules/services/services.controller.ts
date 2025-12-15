@@ -1,16 +1,9 @@
 import catchAsync from '@app/utils/catchAsync';
 import { serviceService } from './services.service';
-import { uploadToS3 } from '@app/utils/s3';
 import sendResponse from '@app/utils/sendResponse';
 import httpStatus from 'http-status';
 
 const createService = catchAsync(async (req, res) => {
-  if (req?.file) {
-    req.body.image = await uploadToS3({
-      file: req.file,
-      fileName: `images/services/${Math.floor(100000 + Math.random() * 900000)}`,
-    });
-  }
   const result = await serviceService.createService(req.body);
 
   sendResponse(res, {
@@ -22,12 +15,6 @@ const createService = catchAsync(async (req, res) => {
 });
 
 const updateService = catchAsync(async (req, res) => {
-  if (req?.file) {
-    req.body.image = await uploadToS3({
-      file: req.file,
-      fileName: `images/services/${Math.floor(100000 + Math.random() * 900000)}`,
-    });
-  }
   const result = await serviceService.updateService(req.params.id, req.body);
 
   sendResponse(res, {
