@@ -9,8 +9,14 @@ import { toolResourceRoutes } from '@app/modules/toolResource/toolResource.route
 import { userRoutes } from '@app/modules/users/users.routes';
 import { Router } from 'express';
 
+import { blogsRoutes } from "../modules/blogs/blogs.route";
+
 const router = Router();
 const moduleRoutes = [
+  {
+    path: "/blogs",
+    route: blogsRoutes,
+  },
   {
     path: '/book-resources',
     route: bookResourcesRoutes,
