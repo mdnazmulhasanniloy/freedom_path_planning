@@ -89,6 +89,12 @@ const getAllBlogs = async (query: Record<string, any>) => {
 
 const getBlogsById = async (id: string) => {
   try {
+    await prisma.blog.update({
+      where: { id },
+      data: {
+        view: { increment: 1 },
+      },
+    });
     const result = await prisma.blog.findUnique({
       where: {
         id,
