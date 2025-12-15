@@ -12,7 +12,7 @@ router.post(
   '/',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
   uploads.single('image'),
-  parseData(),
+  parseData(), 
   serviceController.createService,
 );
 

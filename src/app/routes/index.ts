@@ -5,8 +5,14 @@ import serviceRouter from '@app/modules/services/service.route';
 import { userRoutes } from '@app/modules/users/users.routes';
 import { Router } from 'express';
 
+import { associatesRoutes } from "../modules/associates/associates.route";
+
 const router = Router();
 const moduleRoutes = [
+  {
+    path: "/associates",
+    route: associatesRoutes,
+  },
   {
     path: '/users',
     route: userRoutes,

@@ -59,7 +59,7 @@ model Verification {
 
   @@id([userId])
 }
-
+ 
 //service model
 model Service {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
