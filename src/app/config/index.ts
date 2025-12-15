@@ -14,6 +14,10 @@ const stripe = {
   stripe_api_secret: process.env.STRIPE_API_SECRET,
 };
 
+const admin_credentials = {
+  email: process.env.ADMIN_MAIL,
+};
+
 export default {
   NODE_ENV: process.env.NODE_ENV,
   port: process.env.PORT,
@@ -33,4 +37,5 @@ export default {
   stripe_key: process.env.STRIPE_API_KEY,
   aws,
   stripe,
+  admin_credentials,
 };

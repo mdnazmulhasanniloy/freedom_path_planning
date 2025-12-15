@@ -125,16 +125,15 @@ const getAll = async (query: Record<string, any>) => {
       role: true,
       profile: true,
       phoneNumber: true,
-      expireAt: true,
+      expireAt: false,
       createdAt: true,
-      updatedAt: true,
+      updatedAt: false,
       verification: {
         select: {
           status: true,
         },
       },
       deviceHistory: true,
-      location: true,
     },
   });
 
@@ -162,16 +161,13 @@ const getById = async (id: string) => {
       role: true,
       profile: true,
       phoneNumber: true,
-      expireAt: true,
       createdAt: true,
-      updatedAt: true,
       verification: {
         select: {
           status: true,
         },
       },
       deviceHistory: true,
-      location: true,
     },
   });
 
@@ -184,7 +180,6 @@ const update = async (id: string, payload: Partial<User>) => {
       where: { id },
       data: payload,
       include: {
-        location: true,
         verification: true,
         deviceHistory: true,
       },

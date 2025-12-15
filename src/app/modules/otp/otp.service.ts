@@ -80,6 +80,7 @@ const resendOtp = async (payload: { email: string }) => {
     );
 
     return { token };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, error?.message);
   }
@@ -96,7 +97,7 @@ const verifyOtp = async (token: string, otp: string | number) => {
       token,
       config.jwt_access_secret as Secret,
     ) as JwtPayload;
-  } catch (error) {
+  } catch {
     throw new AppError(
       httpStatus.FORBIDDEN,
       'Session has expired. Please try to submit OTP within 3 minutes',

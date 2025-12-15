@@ -21,12 +21,12 @@ const auth = (...userRoles: string[]) => {
         token,
         config.jwt_access_secret as string,
       ) as JwtPayload;
-    } catch (err) {
+    } catch {
       throw new AppError(httpStatus.UNAUTHORIZED, 'unauthorized');
     }
 
     const { role, userId } = decode;
-    const isUserExist = await prisma.user.findUniqueOrThrow({
+    const isUserExist = await prisma.user.findFirst({
       where: {
         id: userId,
         isDeleted: false,
