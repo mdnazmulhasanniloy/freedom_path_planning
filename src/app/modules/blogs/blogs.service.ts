@@ -89,12 +89,6 @@ const getAllBlogs = async (query: Record<string, any>) => {
 
 const getBlogsById = async (id: string) => {
   try {
-    await prisma.blog.update({
-      where: { id },
-      data: {
-        view: { increment: 1 },
-      },
-    });
     const result = await prisma.blog.findUnique({
       where: {
         id,
@@ -107,6 +101,18 @@ const getBlogsById = async (id: string) => {
   } catch (error: any) {
     throw new AppError(httpStatus.BAD_REQUEST, error?.message);
   }
+};
+
+const visitABlogs = async (id: string) => {
+  const result = await prisma.blog.update({
+    where: { id },
+    data: {
+      view: { increment: 1 },
+    },
+  });
+
+  if (!result) throw new AppError(httpStatus.BAD_REQUEST, 'view blog failed');
+  return result;
 };
 
 // update
@@ -145,4 +151,5 @@ export const blogsService = {
   getBlogsById,
   updateBlogs,
   deleteBlogs,
+  visitABlogs,
 };

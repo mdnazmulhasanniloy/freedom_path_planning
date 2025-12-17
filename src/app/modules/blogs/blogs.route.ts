@@ -30,6 +30,7 @@ router.delete(
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
   blogsController.deleteBlogs,
 );
+router.get('/view/:id', blogsController.visitABlogs);
 router.get('/:id', blogsController.getBlogsById);
 router.get('/', blogsController.getAllBlogs);
 

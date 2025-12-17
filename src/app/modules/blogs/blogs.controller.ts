@@ -40,6 +40,15 @@ const getBlogsById = catchAsync(async (req: Request, res: Response) => {
   });
 
 });
+const visitABlogs = catchAsync(async (req: Request, res: Response) => {
+  const result = await blogsService.visitABlogs(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Blogs visit successfully',
+    data: result,
+  });
+});
 const updateBlogs = catchAsync(async (req: Request, res: Response) => {
 const result = await blogsService.updateBlogs(req.params.id, req.body);
   sendResponse(res, {
@@ -69,4 +78,5 @@ export const blogsController = {
   getBlogsById,
   updateBlogs,
   deleteBlogs,
+  visitABlogs,
 };
