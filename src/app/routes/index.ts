@@ -11,8 +11,14 @@ import { Router } from 'express';
 
 import { blogsRoutes } from "../modules/blogs/blogs.route";
 
+import { booksRoutes } from "../modules/books/books.route";
+
 const router = Router();
 const moduleRoutes = [
+  {
+    path: "/books",
+    route: booksRoutes,
+  },
   {
     path: "/blogs",
     route: blogsRoutes,
