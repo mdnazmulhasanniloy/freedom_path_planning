@@ -129,7 +129,7 @@ model Books {
   isDeleted   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-}
+} 
 
 model Blog {
   id String @id @default(auto()) @map("_id") @db.ObjectId
@@ -159,7 +159,8 @@ model WhatYourClientGets {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   image String 
   key     String @unique @default("main")
-
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   options WhatYourClientGetsItem[]
 
@@ -169,6 +170,8 @@ model WhatYourClientGetsItem {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   title String
   subTitle String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   parentId  String   @db.ObjectId
   parent    WhatYourClientGets @relation(fields: [parentId], references: [id], onDelete: Cascade)
@@ -181,6 +184,8 @@ model includedService {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   title String
   subTitle String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 
@@ -196,6 +201,8 @@ model aboutHeroSection {
   clientReview Int  
   description String 
   banner String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 // 2. freedom path planning
@@ -204,6 +211,9 @@ model freedomPathPlaning {
   key     String @unique @default("main")
   title String
   banner String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
   options freedomPathPlaningItem[]
 }
 
@@ -212,6 +222,8 @@ model freedomPathPlaningItem {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   title String
   subTitle String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   parentId  String   @db.ObjectId
   parent    freedomPathPlaning @relation(fields: [parentId], references: [id], onDelete: Cascade)
@@ -224,6 +236,8 @@ model aboutSteveDeray {
   banner String 
   title String 
   bio String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 
