@@ -4,6 +4,7 @@ import { blogsRoutes } from '@app/modules/blogs/blogs.route';
 import { bookResourcesRoutes } from '@app/modules/bookResources/bookResources.route';
 import { booksRoutes } from '@app/modules/books/books.route';
 import { contentsRoutes } from '@app/modules/contents/contents.route';
+import { includedServiceRoutes } from '@app/modules/includedService/includedService.route';
 import { otpRoutes } from '@app/modules/otp/otp.routes';
 import serviceRouter from '@app/modules/services/service.routes';
 import { testimonialRoutes } from '@app/modules/testimonial/testimonial.route';
@@ -14,6 +15,10 @@ import { Router } from 'express';
 
 const router = Router();
 const moduleRoutes = [
+  {
+    path: '/included-service',
+    route: includedServiceRoutes,
+  },
   {
     path: '/what-your-client-gets',
     route: whatYourClientGetsRoutes,
