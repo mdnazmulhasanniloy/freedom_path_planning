@@ -5,6 +5,8 @@ import { USER_ROLE } from '../users/user.constants';
 import parseData from '@app/middleware/parseData';
 import multer, { memoryStorage } from 'multer';
 import uploadSingle from '@app/middleware/uploadSingle';
+import validateRequest from '@app/middleware/validateRequest';
+import AssociatesValidation from './associates.validation';
 
 const router = Router();
 const uploads = multer({ storage: memoryStorage() });
@@ -15,6 +17,8 @@ router.post(
   uploads.single('photo'),
   parseData(),
   uploadSingle('photo'),
+
+  validateRequest(AssociatesValidation.createValidation),
   associatesController.createAssociates,
 );
 router.patch(
@@ -23,6 +27,7 @@ router.patch(
   uploads.single('photo'),
   parseData(),
   uploadSingle('photo'),
+  validateRequest(AssociatesValidation.updateValidation),
   associatesController.updateAssociates,
 );
 router.delete(
