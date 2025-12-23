@@ -5,6 +5,8 @@ import parseData from '@app/middleware/parseData';
 import auth from '@app/middleware/auth';
 import { USER_ROLE } from '../users/user.constants';
 import uploadSingle from '@app/middleware/uploadSingle';
+import validateRequest from '@app/middleware/validateRequest';
+import ServiceValidation from './services.validation';
 
 const router = Router();
 const uploads = multer({ storage: memoryStorage() });
@@ -15,6 +17,7 @@ router.post(
   uploads.single('image'),
   parseData(),
   uploadSingle('image'),
+  validateRequest(ServiceValidation.createValidation),
   serviceController.createService,
 );
 
@@ -24,6 +27,7 @@ router.patch(
   uploads.single('image'),
   parseData(),
   uploadSingle('image'),
+  validateRequest(ServiceValidation.updateValidation),
   serviceController.updateService,
 );
 

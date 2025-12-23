@@ -247,7 +247,7 @@ enum status {
   active
   blocked
 }
-
+ 
 enum Role {
   admin
   sub_admin
