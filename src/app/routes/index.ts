@@ -1,4 +1,5 @@
 import { aboutHeroSectionRoutes } from '@app/modules/aboutHeroSection/aboutHeroSection.route';
+import { aboutSteveDerayRoutes } from '@app/modules/aboutSteveDeray/aboutSteveDeray.route';
 import { associatesRoutes } from '@app/modules/associates/associates.route';
 import { authRoutes } from '@app/modules/auth/auth.route';
 import { blogsRoutes } from '@app/modules/blogs/blogs.route';
@@ -16,9 +17,14 @@ import { whatYourClientGetsRoutes } from '@app/modules/whatYourClientGets/whatYo
 import { Router } from 'express';
  
  
+ 
 
 const router = Router();
 const moduleRoutes = [
+  {
+    path: "/about-steve-deray",
+    route: aboutSteveDerayRoutes,
+  },
   {
     path: "/freedom-path-planning",
     route: freedomPathPlaningRoutes,

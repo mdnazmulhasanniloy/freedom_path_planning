@@ -235,6 +235,7 @@ model freedomPathPlaningItem {
 model aboutSteveDeray {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   banner String 
+  key     String @unique @default("main")
   title String 
   bio String
   createdAt         DateTime @default(now())
