@@ -1,3 +1,4 @@
+import { aboutHeroSectionRoutes } from '@app/modules/aboutHeroSection/aboutHeroSection.route';
 import { associatesRoutes } from '@app/modules/associates/associates.route';
 import { authRoutes } from '@app/modules/auth/auth.route';
 import { blogsRoutes } from '@app/modules/blogs/blogs.route';
@@ -12,9 +13,14 @@ import { toolResourceRoutes } from '@app/modules/toolResource/toolResource.route
 import { userRoutes } from '@app/modules/users/users.routes';
 import { whatYourClientGetsRoutes } from '@app/modules/whatYourClientGets/whatYourClientGets.route';
 import { Router } from 'express';
+ 
 
 const router = Router();
 const moduleRoutes = [
+  {
+    path: "/about-hero-section",
+    route: aboutHeroSectionRoutes,
+  },
   {
     path: '/included-service',
     route: includedServiceRoutes,
