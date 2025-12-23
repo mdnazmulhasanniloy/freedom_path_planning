@@ -5,6 +5,8 @@ import auth from '@app/middleware/auth';
 import { USER_ROLE } from '../users/user.constants';
 import parseData from '@app/middleware/parseData';
 import uploadSingle from '@app/middleware/uploadSingle';
+import validateRequest from '@app/middleware/validateRequest';
+import TestimonialValidation from './testimonial.validation';
 
 const router = Router();
 const uploads = multer({ storage: memoryStorage() });
@@ -15,6 +17,7 @@ router.post(
   uploads.single('clientPhoto'),
   parseData(),
   uploadSingle('clientPhoto'),
+  validateRequest(TestimonialValidation.createValidation),
   testimonialController.createTestimonial,
 );
 router.patch(
@@ -23,6 +26,7 @@ router.patch(
   uploads.single('clientPhoto'),
   parseData(),
   uploadSingle('clientPhoto'),
+  validateRequest(TestimonialValidation.updateValidation),
   testimonialController.updateTestimonial,
 );
 router.delete(
