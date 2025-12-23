@@ -1,25 +1,31 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// error/PrismaDuplicateError.ts
+import { Prisma } from '@prisma/client';
 import { TErrorSources, TGenericErrorResponse } from '../interface/error';
 
-const handleDuplicateError = (err: any): TGenericErrorResponse => {
-  // Extract value within double quotes using regex
-  const match = err.message.match(/"([^"]*)"/);
+const handleDuplicateError = (
+  err: Prisma.PrismaClientKnownRequestError,
+): TGenericErrorResponse => {
+  // Prisma P2002 duplicate error
+  const target = err?.meta?.target;
 
-  // The extracted value will be in the first capturing group
-  const extractedMessage = match && match[1];
+  let field = 'Field';
+
+  if (Array.isArray(target)) {
+    field = target.join(', ');
+  } else if (typeof target === 'string') {
+    field = target;
+  }
 
   const errorSources: TErrorSources = [
     {
-      path: '',
-      message: `${extractedMessage} is already exists`,
+      path: field,
+      message: `${field} already exists`,
     },
   ];
 
-  const statusCode = 400;
-
   return {
-    statusCode,
-    message: 'Invalid ID',
+    statusCode: 400,
+    message: 'Duplicate value error',
     errorSources,
   };
 };

@@ -9,9 +9,11 @@ import handleDuplicateError from '../error/DuplicateError';
 import AppError from '../error/AppError';
 import { MulterError } from 'multer';
 import handelMulterError from '../error/MulterError';
+import { Prisma } from '@prisma/index';
+import handlePrismaValidationError from '@app/error/PrismaValidationError';
+import handlePrismaKnownError from '@app/error/PrismaKnownError';
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  // eslint-disable-next-line no-console
   //setting default values
   let statusCode = 500;
   let message = 'Something went wrong!';
@@ -27,11 +29,34 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
-  } else if (err?.code === 11000) {
+  } else if (
+    err instanceof Prisma.PrismaClientKnownRequestError &&
+    err.code === 'P2002'
+  ) {
     const simplifiedError = handleDuplicateError(err);
-    statusCode = simplifiedError?.statusCode;
-    message = simplifiedError?.message;
-    errorSources = simplifiedError?.errorSources;
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
+  } else if (err instanceof Prisma.PrismaClientValidationError) {
+    const simplifiedError = handlePrismaValidationError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
+  } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    // Duplicate
+    if (err.code === 'P2002') {
+      const simplifiedError = handleDuplicateError(err);
+      statusCode = simplifiedError.statusCode;
+      message = simplifiedError.message;
+      errorSources = simplifiedError.errorSources;
+    }
+    // Other validation / constraint errors
+    else {
+      const simplifiedError = handlePrismaKnownError(err);
+      statusCode = simplifiedError.statusCode;
+      message = simplifiedError.message;
+      errorSources = simplifiedError.errorSources;
+    }
   } else if (err instanceof AppError) {
     statusCode = err?.statusCode;
     message = err.message;
