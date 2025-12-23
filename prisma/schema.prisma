@@ -194,6 +194,7 @@ model includedService {
 // 1. heroSection
 model aboutHeroSection {
   id String @id @default(auto()) @map("_id")  @db.ObjectId
+  key     String @unique @default("main")
   title String 
   subTitle String
   projects Int 
