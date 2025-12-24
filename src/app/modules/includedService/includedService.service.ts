@@ -8,7 +8,7 @@ import httpStatus from 'http-status';
 
 //Create Function
 const createIncludedService = async (
-  payload: Prisma.includedServiceCreateInput,
+  payload: Prisma.IncludedServiceCreateInput,
 ) => {
   const result = await prisma.includedService.create({
     data: payload,
@@ -30,7 +30,7 @@ const getAllIncludedService = async (query: Record<string, any>) => {
   const { filters, pagination } = await pickQuery(query);
   const { ...filtersData } = filters;
 
-  const where: Prisma.includedServiceWhereInput = {};
+  const where: Prisma.IncludedServiceWhereInput = {};
 
   /*
    * enter here search input filed
@@ -61,7 +61,7 @@ const getAllIncludedService = async (query: Record<string, any>) => {
   const { page, limit, skip, sort } =
     paginationHelper.calculatePagination(pagination);
 
-  const orderBy: Prisma.includedServiceOrderByWithRelationInput[] = sort
+  const orderBy: Prisma.IncludedServiceOrderByWithRelationInput[] = sort
     ? sort.split(',').map(field => {
         const trimmed = field.trim();
         if (trimmed.startsWith('-')) {
@@ -110,7 +110,7 @@ const getIncludedServiceById = async (id: string) => {
 // update
 const updateIncludedService = async (
   id: string,
-  payload: Prisma.includedServiceUpdateInput,
+  payload: Prisma.IncludedServiceUpdateInput,
 ) => {
   const result = await prisma.includedService.update({
     where: {

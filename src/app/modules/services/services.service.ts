@@ -47,6 +47,16 @@ const getServiceById = async (id: string) => {
       where: {
         id,
       },
+
+      include: {
+        whatYourClientGets: {
+          include: {
+            options: true,
+          },
+        },
+
+        includedServices: true,
+      },
     });
 
     if (!result || result?.isDeleted) {
@@ -110,6 +120,15 @@ const getAllService = async (query: Record<string, any>) => {
       skip,
       take: limit,
       orderBy,
+      include: {
+        whatYourClientGets: {
+          include: {
+            options: true,
+          },
+        },
+
+        includedServices: true,
+      },
     });
 
     const total = await prisma.service.count({ where });

@@ -60,20 +60,59 @@ model Verification {
   @@id([userId])
 }
  
-//service model
+  
+// Service Model 
 model Service {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  serviceName String
-  Title String
-  subTitle String 
-  image String 
-  isDeleted   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  serviceName  String
+  subTitle     String
+  image        String
+  isDeleted    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
+  whatYourClientGets WhatYourClientGets?
+  includedServices   IncludedService[]
+}
+ 
+// What Your Client Gets (Section)
+model WhatYourClientGets {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  serviceId  String   @unique @db.ObjectId
+  image      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  options WhatYourClientGetsItem[]
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+}
+ 
+
+// What Your Client Gets Items 
+model WhatYourClientGetsItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  subTitle  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parentId String @db.ObjectId
+  parent   WhatYourClientGets @relation(fields: [parentId], references: [id], onDelete: Cascade)
 }
 
- 
+
+// Included Services Section
+model IncludedService {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  serviceId String   @db.ObjectId
+  title     String
+  subTitle  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+}
+
 model Associates {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
@@ -154,39 +193,9 @@ model Contents {
  @@map("contents")
 }
 
-// service page contents "What Your Client Gets" Section
-model WhatYourClientGets {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  image String 
-  key     String @unique @default("main")
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
 
-  options WhatYourClientGetsItem[]
-
-}
-
-model WhatYourClientGetsItem {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
-  subTitle String
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  parentId  String   @db.ObjectId
-  parent    WhatYourClientGets @relation(fields: [parentId], references: [id], onDelete: Cascade)
-}
  
- 
-// service page contents "include Services"
 
-model includedService {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
-  subTitle String
-  createdAt         DateTime @default(now()) 
-  updatedAt         DateTime @updatedAt
-}
 
 
 // about us Page Contents

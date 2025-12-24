@@ -8,6 +8,7 @@ import httpStatus from 'http-status';
 
 interface WhatYourClientGetsPayload {
   image: string;
+  serviceId: string;
   key?: string;
   options?: {
     id?: string;
