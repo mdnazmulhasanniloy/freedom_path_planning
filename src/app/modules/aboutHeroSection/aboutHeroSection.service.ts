@@ -10,17 +10,23 @@ import httpStatus from 'http-status';
 const createAboutHeroSection = async (
   payload: Prisma.aboutHeroSectionCreateInput,
 ) => {
-  const result = await prisma.aboutHeroSection.create({
-    data: payload,
-  });
+  const isExists = await prisma.aboutHeroSection.findFirst({});
+  if (!isExists) {
+    const result = await prisma.aboutHeroSection.create({
+      data: payload,
+    });
 
-  if (!result) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Failed to create aboutHeroSection',
-    );
+    if (!result) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to create aboutHeroSection',
+      );
+    }
+    return result;
+  } else {
+    const result = await updateAboutHeroSection(isExists.id, payload);
+    return result;
   }
-  return result;
 };
 
 /*

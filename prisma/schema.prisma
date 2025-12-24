@@ -242,6 +242,15 @@ model aboutSteveDeray {
   updatedAt         DateTime @updatedAt
 }
 
+model ReportGenerate {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @db.ObjectId
+  email String
+  pdf String 
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+ 
+}
 
 enum status {
   active

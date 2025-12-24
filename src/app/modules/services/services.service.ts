@@ -91,6 +91,7 @@ const getAllService = async (query: Record<string, any>) => {
   // Pagination & Sorting
   const { page, limit, skip, sort } =
     paginationHelper.calculatePagination(pagination);
+  console.log(sort);
 
   const orderBy: Prisma.ServiceOrderByWithRelationInput[] = sort
     ? sort.split(',').map(field => {

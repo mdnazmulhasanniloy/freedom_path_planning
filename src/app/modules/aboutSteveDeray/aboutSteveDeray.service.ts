@@ -10,17 +10,23 @@ import httpStatus from 'http-status';
 const createAboutSteveDeray = async (
   payload: Prisma.aboutSteveDerayCreateInput,
 ) => {
-  const result = await prisma.aboutSteveDeray.create({
-    data: payload,
-  });
+  const isExists = await prisma.aboutSteveDeray.findFirst({});
+  if (!isExists) {
+    const result = await prisma.aboutSteveDeray.create({
+      data: payload,
+    });
 
-  if (!result) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Failed to create aboutSteveDeray',
-    );
+    if (!result) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to create aboutSteveDeray',
+      );
+    }
+    return result;
+  } else {
+    const result = await updateAboutSteveDeray(isExists.id, payload);
+    return result;
   }
-  return result;
 };
 
 /*

@@ -21,36 +21,95 @@ interface freedomPathPlaningPayload {
 //Create Function
 const createFreedomPathPlaning = async (payload: freedomPathPlaningPayload) => {
   const { options, ...data } = payload;
+  const isExists = await prisma.freedomPathPlaning.findFirst({});
+  if (!isExists) {
+    const result = await prisma.freedomPathPlaning.create({
+      data: {
+        ...data,
+        ...(options?.length && {
+          options: {
+            create: options.map(opt => ({
+              title: opt.title,
+              subTitle: opt.subTitle,
+            })),
+          },
+        }),
+      },
+      include: { options: true },
+    });
 
-  const result = await prisma.freedomPathPlaning.create({
-    data: {
-      ...data,
-      ...(options?.length && {
-        options: {
-          create: options.map(opt => ({
-            title: opt.title,
-            subTitle: opt.subTitle,
-          })),
-        },
-      }),
-    },
-    include: { options: true },
-  });
+    if (!result) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to create freedomPathPlaning',
+      );
+    }
 
-  if (!result) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Failed to create freedomPathPlaning',
+    return result;
+  } else {
+    const existing = await prisma.freedomPathPlaning.findUnique({
+      where: { id: isExists.id },
+      include: { options: true },
+    });
+
+    if (!existing) {
+      throw new Error('Freedom path planing not found');
+    }
+
+    const existingOptionIds = existing.options.map(o => o.id);
+    const payloadOptionIds = options?.filter(o => o.id).map(o => o.id!) ?? [];
+
+    const deleteIds = existingOptionIds.filter(
+      optionId => !payloadOptionIds.includes(optionId),
     );
-  }
 
-  return result;
+    const result = await prisma.freedomPathPlaning.update({
+      where: { id: isExists.id },
+      data: {
+        ...data,
+
+        ...(options &&
+          options.length > 0 && {
+            options: {
+              // 🗑️ DELETE
+              ...(deleteIds.length > 0 && {
+                deleteMany: {
+                  id: { in: deleteIds },
+                },
+              }),
+
+              // ✏️ UPDATE
+              update: options
+                .filter(o => o.id)
+                .map(o => ({
+                  where: { id: o.id! },
+                  data: {
+                    title: o.title,
+                    subTitle: o.subTitle,
+                  },
+                })),
+
+              // ➕ CREATE
+              create: options
+                .filter(o => !o.id)
+                .map(o => ({
+                  title: o.title,
+                  subTitle: o.subTitle,
+                })),
+            },
+          }),
+      },
+      include: { options: true },
+    });
+
+    return result;
+  }
 };
 
 /*
 get all function
 */
-const getAllFreedomPathPlaning = async (query: Record<string, any>) => { 
+const getAllFreedomPathPlaning = async (query: Record<string, any>) => {
   const { filters, pagination } = await pickQuery(query);
   const { searchTerm, ...filtersData } = filters;
 
