@@ -9,8 +9,8 @@ const dashboardCards = async () => {
     _sum: { view: true },
   });
 
-  const downloadsData = await prisma.books.aggregate({
-    _sum: { downloads: true },
+  const downloadsData = await prisma.downloadsBook.aggregate({
+    _count: { id: true },
   });
 
   const reportsData = await prisma.reportGenerate.aggregate({
@@ -19,7 +19,7 @@ const dashboardCards = async () => {
 
   return {
     totalViewers: viewersData?._sum?.view || 0,
-    totalDownloads: downloadsData?._sum?.downloads || 0,
+    totalDownloads: downloadsData?._count.id || 0,
     totalReports: reportsData?._count?.id || 0,
   };
 };
