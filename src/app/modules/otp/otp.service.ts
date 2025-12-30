@@ -40,7 +40,6 @@ const resendOtp = async (payload: { email: string }) => {
       update: {
         otp: Number(otp),
         expiredAt: expiresAt.toDate(),
-        status: false,
       },
 
       create: {
@@ -80,7 +79,7 @@ const resendOtp = async (payload: { email: string }) => {
     );
 
     return { token };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, error?.message);
   }

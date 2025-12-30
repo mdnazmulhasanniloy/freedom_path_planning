@@ -14,12 +14,13 @@ const createContents = async (payload: Prisma.ContentsCreateInput) => {
   return null;
 };
 
-const updateContents = async (
-  id: string,
-  payload: Prisma.ContentsUpdateInput,
-) => {
+const updateContents = async (payload: Prisma.ContentsUpdateInput) => {
+  const contents = await prisma.contents.findFirst();
+  if (!contents) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Contents not found');
+  }
   const result = await prisma.contents.update({
-    where: { id },
+    where: { id: contents?.id },
     data: payload,
   });
 

@@ -12,7 +12,7 @@ const getContents = catchAsync(async (req, res) => {
   });
 });
 const updateContents = catchAsync(async (req, res) => {
-  const result = await contentsService.updateContents(req.params.id, req.body);
+  const result = await contentsService.updateContents(req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,

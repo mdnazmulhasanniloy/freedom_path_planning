@@ -7,6 +7,7 @@ import { bookResourcesRoutes } from '@app/modules/bookResources/bookResources.ro
 import { booksRoutes } from '@app/modules/books/books.route';
 import { contentsRoutes } from '@app/modules/contents/contents.route';
 import { dashboardRoutes } from '@app/modules/dashboard/dashboard.route';
+import { downloadsBookRoutes } from '@app/modules/downloadsBook/downloadsBook.route';
 import { freedomPathPlaningRoutes } from '@app/modules/freedomPathPlaning/freedomPathPlaning.route';
 import { includedServiceRoutes } from '@app/modules/includedService/includedService.route';
 import { otpRoutes } from '@app/modules/otp/otp.routes';
@@ -16,9 +17,13 @@ import { toolResourceRoutes } from '@app/modules/toolResource/toolResource.route
 import { userRoutes } from '@app/modules/users/users.routes';
 import { whatYourClientGetsRoutes } from '@app/modules/whatYourClientGets/whatYourClientGets.route';
 import { Router } from 'express';
- 
+
 const router = Router();
 const moduleRoutes = [
+  {
+    path: '/downloads-book',
+    route: downloadsBookRoutes,
+  },
   {
     path: '/dashboard',
     route: dashboardRoutes,

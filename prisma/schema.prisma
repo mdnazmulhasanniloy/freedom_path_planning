@@ -155,6 +155,19 @@ model BookResources {
   isDeleted   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  downloads DownloadsBook[]
+}
+
+model DownloadsBook {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  username String
+  email String
+  company String?
+  bookId String @db.ObjectId
+ createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  book   BookResources @relation(fields: [bookId], references: [id])
 }
 
 model Books {
