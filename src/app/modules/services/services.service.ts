@@ -6,13 +6,58 @@ import pickQuery from '@app/utils/pickQuery';
 import { Prisma } from '@prisma/index';
 import httpStatus from 'http-status';
 
-const createService = async (payload: Prisma.ServiceCreateInput) => {
+const createService = async (payload: any) => {
   try {
+    const {
+      whatYourClientGets,
+      includedServices,
+      clientGetsImage,
+      image,
+      ...serviceData
+    } = payload;
+
+    if (image?.length > 0) serviceData['image'] = image;
+
     const result = await prisma.service.create({
-      data: payload,
+      data: {
+        ...serviceData,
+
+        // Included services
+        includedServices: includedServices?.length
+          ? {
+              create: includedServices.map((item: any) => ({
+                title: item.title,
+                subTitle: item.subTitle,
+              })),
+            }
+          : undefined,
+
+        // What your client gets + options
+        whatYourClientGets: whatYourClientGets
+          ? {
+              create: {
+                image: clientGetsImage,
+                options: {
+                  create: whatYourClientGets.options?.map((opt: any) => ({
+                    title: opt.title,
+                    subTitle: opt.subTitle,
+                  })),
+                },
+              },
+            }
+          : undefined,
+      },
+
+      include: {
+        includedServices: true,
+        whatYourClientGets: {
+          include: {
+            options: true,
+          },
+        },
+      },
     });
-    if (!result)
-      throw new AppError(httpStatus.BAD_REQUEST, 'service creation failed!');
+
     return result;
   } catch (error: any) {
     throw new AppError(httpStatus.BAD_REQUEST, error?.message);
@@ -68,6 +113,7 @@ const getServiceById = async (id: string) => {
     throw new AppError(httpStatus.BAD_REQUEST, error?.message);
   }
 };
+
 const getAllService = async (query: Record<string, any>) => {
   query.isDeleted = false;
   const { filters, pagination } = await pickQuery(query);
