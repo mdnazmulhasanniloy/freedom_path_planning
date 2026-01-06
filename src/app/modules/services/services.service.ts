@@ -15,8 +15,7 @@ const createService = async (payload: any) => {
       image,
       ...serviceData
     } = payload;
-
-    if (image?.length > 0) serviceData['image'] = image;
+    if (image?.length > 0) serviceData['image'] = image[0];
 
     const result = await prisma.service.create({
       data: {
@@ -36,7 +35,7 @@ const createService = async (payload: any) => {
         whatYourClientGets: whatYourClientGets
           ? {
               create: {
-                image: clientGetsImage,
+                image: clientGetsImage[0],
                 options: {
                   create: whatYourClientGets.options?.map((opt: any) => ({
                     title: opt.title,

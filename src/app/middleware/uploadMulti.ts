@@ -21,20 +21,33 @@ const uploadMultiple = (fields: IUploadField[]) => {
 
     await Promise.all(
       _.map(fields, async (field: IUploadField) => {
-        const file = _.get(files, `${field.name}[0]`);
+        const fieldFiles = _.get(files, field.name) as Express.Multer.File[];
 
-        if (!file) return;
+        if (!fieldFiles || fieldFiles.length === 0) return;
 
-        const uploadedUrl = await uploadToS3({
-          file,
-          fileName: `${field.folder ?? `images/${field.name}`}/${Math.floor(
-            100000 + Math.random() * 900000,
-          )}`,
-        });
+        const uploadedUrls: string[] = [];
 
-        _.set(req.body, field.name, uploadedUrl);
+        await Promise.all(
+          fieldFiles.map(async file => {
+            const uploadedUrl = await uploadToS3({
+              file,
+              fileName: field.folder
+                ? `images/${field.folder}/${Math.floor(
+                    100000 + Math.random() * 900000,
+                  )}`
+                : `images/${field.name}/${Math.floor(
+                    100000 + Math.random() * 900000,
+                  )}`,
+            });
+
+            uploadedUrls.push(uploadedUrl as string);
+          }),
+        );
+        console.log(uploadMultiple);
+        _.set(req.body, field.name, uploadedUrls);
       }),
-    ); 
+    );
+
     next();
   });
 };
