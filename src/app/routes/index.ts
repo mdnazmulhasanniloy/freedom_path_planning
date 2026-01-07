@@ -9,6 +9,7 @@ import { contentsRoutes } from '@app/modules/contents/contents.route';
 import { dashboardRoutes } from '@app/modules/dashboard/dashboard.route';
 import { downloadsBookRoutes } from '@app/modules/downloadsBook/downloadsBook.route';
 import { freedomPathPlaningRoutes } from '@app/modules/freedomPathPlaning/freedomPathPlaning.route';
+import { generateReportRoutes } from '@app/modules/generateReport/generateReport.route';
 import { includedServiceRoutes } from '@app/modules/includedService/includedService.route';
 import { otpRoutes } from '@app/modules/otp/otp.routes';
 import serviceRouter from '@app/modules/services/service.routes';
@@ -92,6 +93,10 @@ const moduleRoutes = [
   {
     path: '/services',
     route: serviceRouter,
+  },
+  {
+    path: '/generate-report',
+    route: generateReportRoutes,
   },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));
