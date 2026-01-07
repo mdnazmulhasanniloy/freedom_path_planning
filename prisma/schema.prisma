@@ -176,6 +176,7 @@ model Books {
   price Int 
   downloads Int @default(0)
   image String
+  url String
   file String
   details String
   isDeleted   Boolean  @default(false)
