@@ -1,8 +1,17 @@
 import AppError from '@app/error/AppError';
 import prisma from '@app/shared/prisma';
+import { sendEmail } from '@app/utils/mailSender';
 import { Prisma } from '@prisma/client';
 import httpStatus from 'http-status';
+import path from 'path';
+import fs from 'fs';
 
+interface ISupport {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  message: string;
+}
 const createContents = async (payload: Prisma.ContentsCreateInput) => {
   const isExists = await prisma.contents.findFirst();
   if (!isExists) {
@@ -41,8 +50,27 @@ const getContents = async (query: Record<string, any>) => {
   return result ? { [key]: result[key] } : { [key]: null };
 };
 
+const contactUs = async (payload: ISupport) => {
+  const otpEmailPath = path.join(
+    __dirname,
+    '../../../../public/view/otp_mail.html',
+  );
+
+  await sendEmail(
+    payload?.email,
+    'support message',
+    fs
+      .readFileSync(otpEmailPath, 'utf8')
+      .replace('{{name}}', payload.name)
+      .replace('{{email}}', payload?.email)
+      .replace('{{phoneNumber}}', payload?.phoneNumber)
+      .replace('{{message}}', payload?.message)
+  );
+};
+
 export const contentsService = {
   createContents,
   getContents,
   updateContents,
+  contactUs,
 };

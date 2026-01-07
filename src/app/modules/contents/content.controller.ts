@@ -20,8 +20,18 @@ const updateContents = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const contactUs = catchAsync(async (req, res) => {
+  const result = await contentsService.contactUs(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Support message send successfully',
+    data: result,
+  });
+});
 
 export const contentController = {
   getContents,
   updateContents,
+  contactUs
 };
