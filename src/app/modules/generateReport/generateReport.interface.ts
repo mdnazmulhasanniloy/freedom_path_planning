@@ -9,4 +9,5 @@ export interface IGenerateReport {
   employeeRetentionBonuses: string;
   outstandingDebtOnHand: string;
   taxOnProceeds: string;
+  withdrawalRate: string;
 }
