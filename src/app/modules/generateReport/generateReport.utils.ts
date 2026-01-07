@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { IGenerateReport } from './generateReport.interface';
+import { uploadToS3 } from '@app/utils/s3';
 
 const fillFreedomPdf = async (data: IGenerateReport): Promise<void> => {
   try {
@@ -44,6 +45,14 @@ const fillFreedomPdf = async (data: IGenerateReport): Promise<void> => {
 
  
     const pdfBytes = await pdfDoc.save();
+
+    const uploadSingle = await uploadToS3({
+      file: pdfBytes,
+      fileName: `psf/reports/${Math.floor(100000 + Math.random() * 900000)}`,
+      contentType: 'application/pdf',
+    });
+
+    console.log(uploadSingle)
     const newPdfPath = path.join(process.cwd(), 'filled_pdf.pdf');
     fs.writeFileSync(newPdfPath, pdfBytes);
 

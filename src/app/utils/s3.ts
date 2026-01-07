@@ -11,13 +11,17 @@ import { s3Client } from '../constants/aws';
 //upload a single file
 export const uploadToS3 = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  { file, fileName }: { file: any; fileName: string },
+  {
+    file,
+    fileName,
+    contentType,
+  }: { file: any; fileName: string; contentType?: string },
 ): Promise<string | null> => {
   const command = new PutObjectCommand({
     Bucket: config.aws.bucket,
     Key: fileName,
     Body: file.buffer,
-    ContentType: file.mimetype,
+    ContentType: contentType ?? file.mimetype,
   });
 
   try {
