@@ -3,60 +3,136 @@ import path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { IGenerateReport } from './generateReport.interface';
 import { uploadToS3 } from '@app/utils/s3';
+import moment from 'moment';
 
-const fillFreedomPdf = async (data: IGenerateReport): Promise<void> => {
+const fillFreedomPdf = async (
+  data: IGenerateReport,
+): Promise<string | undefined> => {
   try {
+    const date = moment().format('ll');
     const pdfPath = path.join(process.cwd(), 'freedom-report.pdf');
-    console.log('Looking for PDF at:', pdfPath);
 
-   
     if (!fs.existsSync(pdfPath)) {
       console.error('PDF file not found at:', pdfPath);
-      return;
+      return '';
     }
 
     const existingPdfBytes = fs.readFileSync(pdfPath);
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const form = pdfDoc.getForm();
 
-    
-    form.getTextField('name').setText(data.name);
+    // Add the date
+    form.getTextField('date').setText(date);
+
+    // Add the name (no changes needed for name)
+    form.getTextField('name').setText(data?.name);
+
+    // Add the "$" sign for numeric fields
     form
       .getTextField('desired-annual-income')
-      .setText(data.desiredAnnualIncome);
+      .setText(`$${data?.desiredAnnualIncome}`);
     form
       .getTextField('non-investment-annual-income')
-      .setText(data.expectedNonInvestmentIncome);
-    form.getTextField('wealth_outside').setText(data.businessOwnershipOutlook);
-    form.getTextField('outstanding_personal').setText(data.personalDebts);
+      .setText(`$${data?.expectedNonInvestmentIncome}`);
+
+    // Calculate the "required from your investments"
+    const requiredInvestments =
+      Number(data?.desiredAnnualIncome) -
+      Number(data?.expectedNonInvestmentIncome);
+    form
+      .getTextField('required_from_your_investments')
+      .setText(`$${requiredInvestments}`);
+
+    form.getTextField('withdrawal_rate').setText(`${data?.withdrawalRate}%`);
+    form.getTextField('withdrawal_rate_2').setText(`${data?.withdrawalRate}%`);
+
+    // Calculate the "assets required assuming"
+    const withdrawalRate = Number(data?.withdrawalRate) / 100;
+    const assetsRequiredAssuming = requiredInvestments / withdrawalRate;
+
+    form
+      .getTextField('assets_required_assuming')
+      .setText(`$${assetsRequiredAssuming.toFixed(0)}`);
+
+    form
+      .getTextField('wealth_outside')
+      .setText(`$${data?.businessOwnershipOutlook}`);
+    form
+      .getTextField('outstanding_personal')
+      .setText(`$${data?.personalDebts}`);
+
+    const totalOutstandingDebt =
+      Number(data?.businessOwnershipOutlook) + Number(data?.personalDebts);
+    const gapToReachTheFreedomPoint =
+      assetsRequiredAssuming - totalOutstandingDebt;
+
+    form
+      .getTextField('gap_to_reach_the_freedom_point')
+      .setText(`$${gapToReachTheFreedomPoint.toFixed(0)}`);
+
+    // For professional fees, employee retention, outstanding debt, etc.
     form
       .getTextField('professional_fees_and_commissions')
-      .setText(data.professionalFees);
+      .setText(`$${data?.professionalFees}`);
     form
       .getTextField('employee_thank_yous')
-      .setText(data.employeeRetentionBonuses);
+      .setText(`$${data?.employeeRetentionBonuses}`);
     form
       .getTextField('outstanding_debt_minus')
-      .setText(data.outstandingDebtOnHand);
-    form.getTextField('ownership_position').setText(data.taxOnProceeds);
+      .setText(`$${data?.outstandingDebtOnHand}`);
 
-   
+    // Set the ownership position (assuming this is a number, add "$" sign)
+    form.getTextField('ownership_position').setText(`$${data?.taxOnProceeds}`);
+
+    // set summary of report
+    form
+      .getTextField('your_freedom_point')
+      .setText(`$${assetsRequiredAssuming.toFixed(0)}`);
+    form
+      .getTextField('gap_to_reach')
+      .setText(`$${gapToReachTheFreedomPoint.toFixed(0)}`);
+
+    // set summary of details
+    form.getTextField('withdrawal_rate_3').setText(`${data?.withdrawalRate}%,`);
+    form
+      .getTextField('your_freedom_point_2')
+      .setText(`$${assetsRequiredAssuming.toFixed(0)}`);
+    form
+      .getTextField('required_from_your_investments_2')
+      .setText(`$${requiredInvestments}`);
+    form
+      .getTextField('gap_to_reach_2')
+      .setText(`$${gapToReachTheFreedomPoint.toFixed(0)}`);
+    form
+      .getTextField('gap_to_reach_2')
+      .setText(`$${gapToReachTheFreedomPoint.toFixed(0)}`);
+    form
+      .getTextField('your_freedom_point_3')
+      .setText(`$${assetsRequiredAssuming.toFixed(0)}`);
+
+    form.getTextField('last_name').setText(`$${data?.name}`);
+
+    // form.getTextField('last_name').setText(`$${data.name}`);
+
+    // Flatten the form fields to make them non-editable
     form.flatten();
 
- 
     const pdfBytes = await pdfDoc.save();
 
+    // Upload the generated PDF to S3
     const uploadSingle = await uploadToS3({
       file: pdfBytes,
-      fileName: `psf/reports/${Math.floor(100000 + Math.random() * 900000)}`,
+      fileName: `psf/reports/Wealth_Gap_Report${Math.floor(100000 + Math.random() * 900000)}`,
       contentType: 'application/pdf',
     });
 
-    console.log(uploadSingle)
+    // Save the filled PDF locally (optional)
     const newPdfPath = path.join(process.cwd(), 'filled_pdf.pdf');
     fs.writeFileSync(newPdfPath, pdfBytes);
 
-    console.log('PDF filled and saved to', newPdfPath);
+    // Return the URL from S3
+    // console.log('hello');
+    return uploadSingle!;
   } catch (error) {
     console.error('Error filling PDF form:', error);
   }
