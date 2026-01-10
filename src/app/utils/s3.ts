@@ -33,6 +33,7 @@ export const uploadToS3 = async (
     const url = `https://${config.aws.bucket}.s3.${config.aws.region}.amazonaws.com/${fileName}`;
 
     return url;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     throw new AppError(httpStatus.BAD_REQUEST, 'File Upload failed');
   }

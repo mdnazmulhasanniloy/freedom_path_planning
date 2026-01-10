@@ -4,7 +4,6 @@ import multer, { memoryStorage } from 'multer';
 import parseData from '@app/middleware/parseData';
 import auth from '@app/middleware/auth';
 import { USER_ROLE } from '../users/user.constants';
-import uploadSingle from '@app/middleware/uploadSingle';
 import validateRequest from '@app/middleware/validateRequest';
 import ServiceValidation from './services.validation'; 
 import uploadMultiple from '@app/middleware/uploadMulti';
@@ -33,9 +32,9 @@ router.post(
 router.patch(
   '/:id',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
-  uploads.single('image'),
+  uploads.fields(files),
   parseData(),
-  uploadSingle('image'),
+  uploadMultiple(files),
   validateRequest(ServiceValidation.updateValidation),
   serviceController.updateService,
 );

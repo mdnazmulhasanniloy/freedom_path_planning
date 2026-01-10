@@ -1,10 +1,6 @@
 import z from 'zod';
 
-// Create / Update Payload Validation
-const ServiceSchema = z.object({
-  serviceName: z.string().min(2, 'Service name is required'),
-  subTitle: z.string().min(2, 'Subtitle is required'),
-});
+
 
 const createServiceSchema = z.object({
   serviceName: z
@@ -44,7 +40,7 @@ const createValidation = z.object({
   body: createServiceSchema,
 });
 const updateValidation = z.object({
-  body: ServiceSchema,
+  body: createServiceSchema.partial(),
 });
 
 const ServiceValidation = {
