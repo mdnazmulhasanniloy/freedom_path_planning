@@ -10,4 +10,6 @@ export interface IGenerateReport {
   outstandingDebtOnHand: string;
   taxOnProceeds: string;
   withdrawalRate: number;
+  ownershipStake: string;
+  yourTaxes: string;
 }
