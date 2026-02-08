@@ -6,45 +6,66 @@ import { IGenerateReport } from './generateReport.interface';
 import { uploadToS3 } from '@app/utils/s3';
 import moment from 'moment';
 
-const drawNeedle = async (pdfDoc: PDFDocument, page: any, score: any) => {
+export const drawNeedle = async (
+  pdfDoc: PDFDocument,
+  page: any,
+  score: number,
+) => {
   const { width, height } = page.getSize();
 
-  // Set the left part of the gauge as the center (Red Zone starts from here)
-  const centerX = width / 3; // New X position (left part of the page)
-  const centerY = height / 1.5; // Adjust the Y position (vertical position)
+  // Where the gauge center is (tune if needed)
+  const centerX = width / 3;
+  const centerY = height / 1.5;
 
-  // Needle length and size adjustments
-  const needleLength = 80; // Length of the needle
-  const needleWidth = 10; // Thickness of the needle
+  const needleLength = 80;
+  const needleWidth = 8; // a bit thinner looks closer to your expectation
 
-  // Define the rotation angle based on the score
-  let needleAngle = 0;
+  // 1) Clamp score to 0..100
+  const s = Math.max(0, Math.min(100, Number(score) || 0));
 
-  // Correct the score to needle angle mapping (left to right)
-  if (score >= 1 && score <= 50) {
-    // Red zone: score between 1 to 50, needle angle between 0° (left) to 90° (middle)
-    needleAngle = (score / 50) * 90; // From 0° to 90° (left to right in the red zone)
-  } else if (score <= 79) {
-    // Yellow zone: score between 51 to 79, needle angle between 90° (middle) to 135° (right)
-    needleAngle = ((score - 50) / 30) * 45 + 90; // From 90° to 135° (middle to right in the yellow zone)
+  // 2) Convert score -> angle (degrees)
+  // Coordinate system:
+  // 180° = left, 90° = up, 0° = right
+  let angleDeg = 90;
+
+  if (s <= 49) {
+    // RED: 0..49 maps 180° -> 90°
+    // (LEFT to UP)
+    const t = s / 49; // 0..1
+    angleDeg = 180 - t * 90;
+  } else if (s <= 79) {
+    // YELLOW: 50..79 maps 90° -> 45°
+    // (UP to slightly right)
+    const t = (s - 50) / (79 - 50); // 0..1
+    angleDeg = 90 - t * 45;
   } else {
-    // Green zone: score between 80 to 100, needle angle between 135° (middle) to 180° (right)
-    needleAngle = ((score - 79) / 21) * 45 + 135; // From 135° to 180° (middle to right in the green zone)
+    // GREEN: 80..100 maps 45° -> 0°
+    // (right-ish to RIGHT end)
+    const t = (s - 80) / (100 - 80); // 0..1
+    angleDeg = 45 - t * 45;
   }
 
-  // Convert the angle to radians (for trigonometric calculation)
-  const needleAngleInRadians = (needleAngle * Math.PI) / 180;
+  // 3) Degrees -> radians
+  const rad = (angleDeg * Math.PI) / 180;
 
-  // Draw the needle (using a simple line)
-  const needleX = centerX + needleLength * Math.cos(needleAngleInRadians);
-  const needleY = centerY + needleLength * Math.sin(needleAngleInRadians);
+  // 4) Needle endpoint
+  const needleX = centerX + needleLength * Math.cos(rad);
+  const needleY = centerY + needleLength * Math.sin(rad);
 
-  // Draw the needle as a line
+  // 5) Draw needle
   page.drawLine({
     start: { x: centerX, y: centerY },
     end: { x: needleX, y: needleY },
-    color: rgb(0, 0, 0), // Needle color (black)
+    color: rgb(0, 0, 0),
     thickness: needleWidth,
+  });
+
+  // Optional: draw a small center dot (looks like your expected gauge)
+  page.drawCircle({
+    x: centerX,
+    y: centerY,
+    size: 6,
+    color: rgb(0.45, 0.45, 0.45),
   });
 };
 
@@ -230,7 +251,6 @@ export const fillFreedomPdf = async (
       fileName: `psf/reports/Wealth_Gap_Report_${Date.now()}.pdf`,
       contentType: 'application/pdf',
     });
- 
 
     const uploadPage = await uploadToS3({
       file: page4PdfBytes,
