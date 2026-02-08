@@ -1,5 +1,6 @@
 export interface IGenerateReport {
   name: string;
+  email: string;
   date: string;
   desiredAnnualIncome: string;
   expectedNonInvestmentIncome: string;
