@@ -1,5 +1,6 @@
 export interface IGenerateReport {
   name: string;
+  email: string;
   date: string;
   desiredAnnualIncome: string;
   expectedNonInvestmentIncome: string;
@@ -10,4 +11,6 @@ export interface IGenerateReport {
   outstandingDebtOnHand: string;
   taxOnProceeds: string;
   withdrawalRate: number;
+  ownershipStake: string;
+  yourTaxes: string;
 }

@@ -13,13 +13,18 @@ import { s3Client } from '../constants/aws';
 //upload a single file
 export const uploadToS3 = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  { file, fileName }: { file: any; fileName: string },
+  {
+    file,
+    fileName,
+    contentType,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }: { file: any; fileName: string; contentType?: string },
 ): Promise<string | null> => {
   const command = new PutObjectCommand({
     Bucket: config.aws.bucket,
     Key: fileName,
     Body: file.buffer,
-    ContentType: file.mimetype,
+    ContentType: contentType || file.mimetype,
     ACL: ObjectCannedACL.public_read, //access public read
   });
 
@@ -30,10 +35,9 @@ export const uploadToS3 = async (
       throw new AppError(httpStatus.BAD_REQUEST, 'File Upload failed');
     }
     const url = `${config?.aws?.s3BaseUrl}/${fileName}`;
-
+    console.log('---------------', url);
     return url;
   } catch (error) {
-    console.log(error);
     throw new AppError(httpStatus.BAD_REQUEST, 'File Upload failed');
   }
 };
@@ -78,8 +82,7 @@ export const uploadManyToS3 = async (
         ACL: ObjectCannedACL.public_read, //access public read
       });
 
-    
-       await s3Client.send(command);
+      await s3Client.send(command);
       // const url = `${config?.aws?.s3BaseUrl}/${fileKey}`;
       const url = `${config?.aws?.s3BaseUrl}/${fileKey}`;
       return { url, key: newFileName };
@@ -87,7 +90,7 @@ export const uploadManyToS3 = async (
 
     const uploadedUrls = await Promise.all(uploadPromises);
     return uploadedUrls;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new Error('File Upload failed');
   }
