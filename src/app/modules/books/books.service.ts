@@ -8,6 +8,8 @@ import httpStatus from 'http-status';
 
 //Create Function
 const createBooks = async (payload: Prisma.BooksCreateInput) => {
+  payload.file = payload.file[0];
+  payload.image = payload.image[0];
   const result = await prisma.books.create({
     data: payload,
   });
