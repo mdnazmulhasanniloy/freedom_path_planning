@@ -5,11 +5,7 @@ import { USER_ROLE } from '../users/user.constants';
 
 const router = Router();
 
-router.post(
-  '/get-report',
-  auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
-  generateReportController.generateReport,
-);
+router.post('/get-report', generateReportController.generateReport);
 router.get(
   '/',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),

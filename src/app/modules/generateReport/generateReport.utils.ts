@@ -53,6 +53,16 @@ type UploadResult = {
   uploadPage: string;
 };
 
+/* -------------------------------------------
+   Currency formatter (adds comma automatically)
+-------------------------------------------- */
+const formatUSD = (value: number | string): string => {
+  const num = Number(value || 0);
+  return `$${num.toLocaleString('en-US', {
+    maximumFractionDigits: 0,
+  })}`;
+};
+
 export const fillFreedomPdf = async (
   data: IGenerateReport,
 ): Promise<UploadResult | undefined> => {
@@ -69,202 +79,164 @@ export const fillFreedomPdf = async (
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const form = pdfDoc.getForm();
 
-    // -------- page fill logic (same as yours) --------
+    /* ---------- Page 1 ---------- */
     form.getTextField('date').setText(date);
     form.getTextField('name').setText(data?.name ?? '');
 
+    const desiredAnnualIncome = Number(data?.desiredAnnualIncome || 0);
+    const nonInvestmentIncome = Number(data?.expectedNonInvestmentIncome || 0);
+
     form
       .getTextField('desired-annual-income')
-      .setText(`$${Number(data?.desiredAnnualIncome || 0)}`);
+      .setText(formatUSD(desiredAnnualIncome));
     form
       .getTextField('non-investment-annual-income')
-      .setText(`$${Number(data?.expectedNonInvestmentIncome || 0)}`);
+      .setText(formatUSD(nonInvestmentIncome));
 
-    const requiredInvestments =
-      Number(data?.desiredAnnualIncome || 0) -
-      Number(data?.expectedNonInvestmentIncome || 0);
+    const requiredInvestments = desiredAnnualIncome - nonInvestmentIncome;
 
     form
       .getTextField('required_from_your_investments')
-      .setText(`$${requiredInvestments}`);
+      .setText(formatUSD(requiredInvestments));
 
-    form
-      .getTextField('withdrawal_rate')
-      .setText(`${Number(data?.withdrawalRate || 0)}%`);
-    form
-      .getTextField('withdrawal_rate_2')
-      .setText(`${Number(data?.withdrawalRate || 0)}%`);
+    const withdrawalRatePercent = Number(data?.withdrawalRate || 0);
+    const withdrawalRate = withdrawalRatePercent / 100;
 
-    const withdrawalRate = Number(data?.withdrawalRate || 0) / 100;
+    form.getTextField('withdrawal_rate').setText(`${withdrawalRatePercent}%`);
+    form.getTextField('withdrawal_rate_2').setText(`${withdrawalRatePercent}%`);
+
     const assetsRequiredAssuming =
       withdrawalRate === 0 ? 0 : requiredInvestments / withdrawalRate;
 
     form
       .getTextField('assets_required_assuming')
-      .setText(`$${assetsRequiredAssuming.toFixed(0)}`);
+      .setText(formatUSD(assetsRequiredAssuming));
 
-    form
-      .getTextField('wealth_outside')
-      .setText(`$${Number(data?.businessOwnershipOutlook || 0)}`);
-    form
-      .getTextField('outstanding_personal')
-      .setText(`$${Number(data?.personalDebts || 0)}`);
+    const currentWealth = Number(data?.businessOwnershipOutlook || 0);
+    const personalDebts = Number(data?.personalDebts || 0);
 
-    const totalOutstandingDebt =
-      Number(data?.businessOwnershipOutlook || 0) +
-      Number(data?.personalDebts || 0);
+    form.getTextField('wealth_outside').setText(formatUSD(currentWealth));
+    form.getTextField('outstanding_personal').setText(formatUSD(personalDebts));
 
     const gapToReachTheFreedomPoint =
-      assetsRequiredAssuming - totalOutstandingDebt;
+      assetsRequiredAssuming - (currentWealth + personalDebts);
 
     form
       .getTextField('gap_to_reach_the_freedom_point')
-      .setText(`$${gapToReachTheFreedomPoint.toFixed(0)}`);
+      .setText(formatUSD(gapToReachTheFreedomPoint));
+
+    /* ---------- Page 2 ---------- */
+    const professionalFees = Number(data?.professionalFees || 0);
+    const employeeBonuses = Number(data?.employeeRetentionBonuses || 0);
+    const outstandingDebt = Number(data?.outstandingDebtOnHand || 0);
 
     form
       .getTextField('professional_fees_and_commissions')
-      .setText(`$${Number(data?.professionalFees || 0)}`);
+      .setText(formatUSD(professionalFees));
     form
       .getTextField('employee_thank_yous')
-      .setText(`$${Number(data?.employeeRetentionBonuses || 0)}`);
+      .setText(formatUSD(employeeBonuses));
     form
       .getTextField('outstanding_debt_minus')
-      .setText(`$${Number(data?.outstandingDebtOnHand || 0)}`);
+      .setText(formatUSD(outstandingDebt));
 
-    // second page fields
-    form
-      .getTextField('ownership_stake')
-      .setText(`${Number(data?.ownershipStake || 0)}%`);
+    const ownershipStakePercent = Number(data?.ownershipStake || 0);
+    const ownershipDecimal = ownershipStakePercent / 100;
 
-    const remainingPercent = 100 - Number(data?.yourTaxes || 0);
-    const remainingDecimal = remainingPercent / 100;
+    form.getTextField('ownership_stake').setText(`${ownershipStakePercent}%`);
+
+    const taxPercent = Number(data?.yourTaxes || 0);
+    const remainingDecimal = (100 - taxPercent) / 100;
 
     const grossProceeds =
       remainingDecimal === 0 ? 0 : gapToReachTheFreedomPoint / remainingDecimal;
 
-    const ownershipDecimal = Number(data?.ownershipStake || 0) / 100;
     const finalGrossProceed =
       ownershipDecimal === 0 ? 0 : grossProceeds / ownershipDecimal;
 
     const grossSalePrice =
-      finalGrossProceed +
-      Number(data?.professionalFees || 0) +
-      Number(data?.employeeRetentionBonuses || 0) +
-      Number(data?.outstandingDebtOnHand || 0);
+      finalGrossProceed + professionalFees + employeeBonuses + outstandingDebt;
 
-    form
-      .getTextField('gross_sale_price')
-      .setText(`$${grossSalePrice.toFixed(0)}`);
-    form
-      .getTextField('gross_sale_price_2')
-      .setText(`$${grossSalePrice.toFixed(0)}`);
+    form.getTextField('gross_sale_price').setText(formatUSD(grossSalePrice));
+    form.getTextField('gross_sale_price_2').setText(formatUSD(grossSalePrice));
 
-    form.getTextField('subtotal').setText(`$${finalGrossProceed.toFixed(0)}`);
-    form
-      .getTextField('gross_proceeds')
-      .setText(`$${finalGrossProceed.toFixed(0)}`);
+    form.getTextField('subtotal').setText(formatUSD(finalGrossProceed));
+    form.getTextField('gross_proceeds').setText(formatUSD(finalGrossProceed));
 
     form
       .getTextField('ownership_position')
-      .setText(
-        `$${(finalGrossProceed - gapToReachTheFreedomPoint).toFixed(0)}`,
-      );
+      .setText(formatUSD(finalGrossProceed - gapToReachTheFreedomPoint));
 
     form
       .getTextField('net_proceeds')
-      .setText(`$${gapToReachTheFreedomPoint.toFixed(0)}`);
+      .setText(formatUSD(gapToReachTheFreedomPoint));
 
+    /* ---------- Summary ---------- */
     form
       .getTextField('your_freedom_point')
-      .setText(`$${assetsRequiredAssuming.toFixed(0)}`);
+      .setText(formatUSD(assetsRequiredAssuming));
     form
       .getTextField('gap_to_reach')
-      .setText(`$${gapToReachTheFreedomPoint.toFixed(0)}`);
-    form
-      .getTextField('current_wealth')
-      .setText(`$${Number(data?.businessOwnershipOutlook || 0)}`);
+      .setText(formatUSD(gapToReachTheFreedomPoint));
+    form.getTextField('current_wealth').setText(formatUSD(currentWealth));
 
     form
       .getTextField('withdrawal_rate_3')
-      .setText(`${Number(data?.withdrawalRate || 0)}%,`);
+      .setText(`${withdrawalRatePercent}%,`);
     form
       .getTextField('your_freedom_point_2')
-      .setText(`$${assetsRequiredAssuming.toFixed(0)}`);
+      .setText(formatUSD(assetsRequiredAssuming));
     form
       .getTextField('required_from_your_investments_2')
-      .setText(`$${requiredInvestments}`);
+      .setText(formatUSD(requiredInvestments));
     form
       .getTextField('gap_to_reach_2')
-      .setText(`$${gapToReachTheFreedomPoint.toFixed(0)}`);
+      .setText(formatUSD(gapToReachTheFreedomPoint));
     form
       .getTextField('your_freedom_point_3')
-      .setText(`$${assetsRequiredAssuming.toFixed(0)}`);
+      .setText(formatUSD(assetsRequiredAssuming));
 
-    // ⚠️ your code had "$" and uses last_name field weirdly:
-    // If it's really last name, don't prefix with "$"
-    form.getTextField('last_name').setText(`${data?.name ?? ''}`);
+    form.getTextField('last_name').setText(data?.name ?? '');
+    form.getTextField('current_wealth_2').setText(formatUSD(currentWealth));
 
-    form
-      .getTextField('current_wealth_2')
-      .setText(`$${Number(data?.businessOwnershipOutlook || 0)}`);
-
-    // score
+    /* ---------- Score ---------- */
     const score =
       assetsRequiredAssuming === 0
         ? 0
-        : (Number(data?.businessOwnershipOutlook || 0) /
-            assetsRequiredAssuming) *
-          100;
+        : (currentWealth / assetsRequiredAssuming) * 100;
 
-    form.getTextField('score').setText(`${score.toFixed(0)}`);
+    form.getTextField('score').setText(score.toFixed(0));
     form
       .getTextField('score_name')
       .setText(`${data?.name ?? ''} by Steve DeTray`);
 
-    // Draw needle on 4th page (index 3)
+    /* ---------- Gauge ---------- */
     const page4Index = 3;
     const page4 = pdfDoc.getPages()[page4Index];
     await drawNeedle(pdfDoc, page4, score);
 
-    // flatten so the extracted page is also “final”
     form.flatten();
 
-    // --------- 1) Save FULL PDF bytes ----------
+    /* ---------- Save PDFs ---------- */
     const fullPdfBytes = await pdfDoc.save();
 
-    // --------- 2) Extract ONLY page 4 ----------
     const singlePageDoc = await PDFDocument.create();
     const [copiedPage4] = await singlePageDoc.copyPages(pdfDoc, [page4Index]);
     singlePageDoc.addPage(copiedPage4);
-
     const page4PdfBytes = await singlePageDoc.save();
 
-    // --------- 3) Upload BOTH ----------
     const uploadSingle = await uploadToS3({
       file: fullPdfBytes,
-      fileName: `psf/reports/Wealth_Gap_Report_${Math.floor(
-        100000 + Math.random() * 900000,
-      )}.pdf`,
+      fileName: `psf/reports/Wealth_Gap_Report_${Date.now()}.pdf`,
       contentType: 'application/pdf',
     });
+ 
 
     const uploadPage = await uploadToS3({
       file: page4PdfBytes,
-      fileName: `psf/reports/Wealth_Gap_Report_Page4_${Math.floor(
-        100000 + Math.random() * 900000,
-      )}.pdf`,
+      fileName: `psf/reports/Wealth_Gap_Report_Page4_${Date.now()}.pdf`,
       contentType: 'application/pdf',
     });
-
-    // Optional local saves
-    fs.writeFileSync(
-      path.join(process.cwd(), 'filled_pdf_full.pdf'),
-      fullPdfBytes,
-    );
-    fs.writeFileSync(
-      path.join(process.cwd(), 'filled_pdf_page4.pdf'),
-      page4PdfBytes,
-    );
 
     return {
       uploadSingle: uploadSingle!,

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   DeleteObjectCommand,
   DeleteObjectsCommand,
+  ObjectCannedACL,
   PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import httpStatus from 'http-status';
@@ -15,25 +17,26 @@ export const uploadToS3 = async (
     file,
     fileName,
     contentType,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }: { file: any; fileName: string; contentType?: string },
 ): Promise<string | null> => {
   const command = new PutObjectCommand({
     Bucket: config.aws.bucket,
     Key: fileName,
     Body: file.buffer,
-    ContentType: contentType ?? file.mimetype,
+    ContentType: contentType || file.mimetype,
+    ACL: ObjectCannedACL.public_read, //access public read
   });
 
   try {
     const key = await s3Client.send(command);
+
     if (!key) {
       throw new AppError(httpStatus.BAD_REQUEST, 'File Upload failed');
     }
-
-    const url = `https://${config.aws.bucket}.s3.${config.aws.region}.amazonaws.com/${fileName}`;
-
+    const url = `${config?.aws?.s3BaseUrl}/${fileName}`;
+    console.log('---------------', url);
     return url;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     throw new AppError(httpStatus.BAD_REQUEST, 'File Upload failed');
   }
@@ -49,7 +52,7 @@ export const deleteFromS3 = async (key: string) => {
     await s3Client.send(command);
   } catch (error) {
     console.log('🚀 ~ deleteFromS3 ~ error:', error);
-    throw new Error('s3 file delete failed');
+    throw new AppError(httpStatus.BAD_REQUEST, 's3 file delete failed');
   }
 };
 
@@ -70,21 +73,25 @@ export const uploadManyToS3 = async (
         : `${Math.floor(100000 + Math.random() * 900000)}${Date.now()}`;
 
       const fileKey = `${path}/${newFileName}`;
+
       const command = new PutObjectCommand({
         Bucket: config.aws.bucket as string,
         Key: fileKey,
         Body: file?.buffer,
+        ContentType: file.mimetype,
+        ACL: ObjectCannedACL.public_read, //access public read
       });
 
       await s3Client.send(command);
-
-      const url = `https://${config.aws.bucket}.s3.${config.aws.region}.amazonaws.com/${fileKey}`;
+      // const url = `${config?.aws?.s3BaseUrl}/${fileKey}`;
+      const url = `${config?.aws?.s3BaseUrl}/${fileKey}`;
       return { url, key: newFileName };
     });
 
     const uploadedUrls = await Promise.all(uploadPromises);
     return uploadedUrls;
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     throw new Error('File Upload failed');
   }
 };

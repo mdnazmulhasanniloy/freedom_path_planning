@@ -10,13 +10,17 @@ import { paginationHelper } from '@app/helpers/pagination.helpers';
 export const generateReport = async (payload: IGenerateReport) => {
   try {
     const pdf = await fillFreedomPdf(payload);
+    console.log(pdf);
+    return pdf;
+    const data = {
+      name: payload.name,
+      email: payload.email,
+      pdf: pdf?.uploadSingle as string,
+      pdfForUser: pdf?.uploadPage as string,
+    };
+    console.log(data);
     const result = await prisma.reportGenerate.create({
-      data: {
-        name: payload.name,
-        email: payload.email,
-        pdf: pdf?.uploadSingle as string,
-        pdfForUser: pdf?.uploadPage as string,
-      },
+      data: data,
     });
 
     return result;
