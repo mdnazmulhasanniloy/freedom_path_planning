@@ -13,46 +13,31 @@ export const drawNeedle = async (
 ) => {
   const { width, height } = page.getSize();
 
-  // Where the gauge center is (tune if needed)
+  // Tune these based on your actual gauge placement
   const centerX = width / 3;
   const centerY = height / 1.5;
 
   const needleLength = 80;
-  const needleWidth = 8; // a bit thinner looks closer to your expectation
+  const needleWidth = 8;
 
-  // 1) Clamp score to 0..100
+  // Clamp score 0..100
   const s = Math.max(0, Math.min(100, Number(score) || 0));
 
-  // 2) Convert score -> angle (degrees)
-  // Coordinate system:
-  // 180° = left, 90° = up, 0° = right
-  let angleDeg = 90;
+  /**
+   * Linear mapping across the semicircle:
+   * 0   -> 180° (left)
+   * 100 ->   0° (right)
+   */
+  const angleDeg = 180 - (s / 100) * 180;
 
-  if (s <= 49) {
-    // RED: 0..49 maps 180° -> 90°
-    // (LEFT to UP)
-    const t = s / 49; // 0..1
-    angleDeg = 180 - t * 90;
-  } else if (s <= 79) {
-    // YELLOW: 50..79 maps 90° -> 45°
-    // (UP to slightly right)
-    const t = (s - 50) / (79 - 50); // 0..1
-    angleDeg = 90 - t * 45;
-  } else {
-    // GREEN: 80..100 maps 45° -> 0°
-    // (right-ish to RIGHT end)
-    const t = (s - 80) / (100 - 80); // 0..1
-    angleDeg = 45 - t * 45;
-  }
-
-  // 3) Degrees -> radians
+  // Degrees -> radians
   const rad = (angleDeg * Math.PI) / 180;
 
-  // 4) Needle endpoint
+  // Needle endpoint
   const needleX = centerX + needleLength * Math.cos(rad);
   const needleY = centerY + needleLength * Math.sin(rad);
 
-  // 5) Draw needle
+  // Draw needle
   page.drawLine({
     start: { x: centerX, y: centerY },
     end: { x: needleX, y: needleY },
@@ -60,7 +45,7 @@ export const drawNeedle = async (
     thickness: needleWidth,
   });
 
-  // Optional: draw a small center dot (looks like your expected gauge)
+  // Center dot
   page.drawCircle({
     x: centerX,
     y: centerY,
@@ -227,6 +212,7 @@ export const fillFreedomPdf = async (
         : (currentWealth / assetsRequiredAssuming) * 100;
 
     form.getTextField('score').setText(score.toFixed(0));
+    // form.getTextField('score_2').setText(score.toFixed(0));
     form
       .getTextField('score_name')
       .setText(`${data?.name ?? ''} by Steve DeTray`);
