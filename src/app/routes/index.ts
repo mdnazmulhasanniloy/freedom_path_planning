@@ -8,6 +8,7 @@ import { booksRoutes } from '@app/modules/books/books.route';
 import { contentsRoutes } from '@app/modules/contents/contents.route';
 import { dashboardRoutes } from '@app/modules/dashboard/dashboard.route';
 import { downloadsBookRoutes } from '@app/modules/downloadsBook/downloadsBook.route';
+import { footerContentRoutes } from '@app/modules/footerContent/footerContent.route';
 import { freedomPathPlaningRoutes } from '@app/modules/freedomPathPlaning/freedomPathPlaning.route';
 import { generateReportRoutes } from '@app/modules/generateReport/generateReport.route';
 import { includedServiceRoutes } from '@app/modules/includedService/includedService.route';
@@ -21,6 +22,10 @@ import { Router } from 'express';
 
 const router = Router();
 const moduleRoutes = [
+  {
+    path: '/footerContent',
+    route: footerContentRoutes,
+  },
   {
     path: '/downloads-book',
     route: downloadsBookRoutes,
