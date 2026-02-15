@@ -41,7 +41,7 @@ const getFooterContentById = catchAsync(async (req: Request, res: Response) => {
 
 });
 const updateFooterContent = catchAsync(async (req: Request, res: Response) => {
-const result = await footerContentService.updateFooterContent(req.params.id, req.body);
+const result = await footerContentService.updateFooterContent( req.body);
   sendResponse(res, {
    statusCode: httpStatus.OK,
     success: true,

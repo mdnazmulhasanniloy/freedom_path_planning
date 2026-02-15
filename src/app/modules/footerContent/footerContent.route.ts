@@ -11,7 +11,7 @@ router.post(
   footerContentController.createFooterContent,
 );
 router.patch(
-  '/:id',
+  '/',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
   footerContentController.updateFooterContent,
 );
