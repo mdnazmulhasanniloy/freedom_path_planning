@@ -109,7 +109,6 @@ const getFooterContentById = async (id: string) => {
 
 // update
 const updateFooterContent = async (
-  id: string,
   payload: Prisma.FooterContentUpdateInput | Prisma.FooterContentCreateInput,
 ) => {
   try {
@@ -125,7 +124,7 @@ const updateFooterContent = async (
 
     const result = await prisma.footerContent.update({
       where: {
-        id,
+        id: isExists[0].id,
       },
       data: payload,
     });
