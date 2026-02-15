@@ -23,7 +23,7 @@ import { Router } from 'express';
 const router = Router();
 const moduleRoutes = [
   {
-    path: '/footerContent',
+    path: '/footer-content',
     route: footerContentRoutes,
   },
   {
