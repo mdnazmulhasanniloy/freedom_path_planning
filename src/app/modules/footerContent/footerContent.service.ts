@@ -27,7 +27,6 @@ const createFooterContent = async (
 get all function
 */
 const getAllFooterContent = async (query: Record<string, any>) => {
-  
   const { filters, pagination } = await pickQuery(query);
   const { searchTerm, ...filtersData } = filters;
 
@@ -111,18 +110,32 @@ const getFooterContentById = async (id: string) => {
 // update
 const updateFooterContent = async (
   id: string,
-  payload: Prisma.FooterContentUpdateInput,
+  payload: Prisma.FooterContentUpdateInput | Prisma.FooterContentCreateInput,
 ) => {
-  const result = await prisma.footerContent.update({
-    where: {
-      id,
-    },
-    data: payload,
-  });
+  try {
+    const isExists = await prisma.footerContent.findMany({
+      where: {},
+    });
 
-  if (!result) throw new Error('Failed to update FooterContent');
+    if (isExists?.length === 0) {
+      return await createFooterContent(
+        payload as Prisma.FooterContentCreateInput,
+      );
+    }
 
-  return result;
+    const result = await prisma.footerContent.update({
+      where: {
+        id,
+      },
+      data: payload,
+    });
+
+    if (!result) throw new Error('Failed to update FooterContent');
+
+    return result;
+  } catch (error) {
+    throw new AppError(httpStatus.BAD_REQUEST, (error as Error).message);
+  }
 };
 
 const deleteFooterContent = async (id: string) => {
