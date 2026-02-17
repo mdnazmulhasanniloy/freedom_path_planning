@@ -29,7 +29,7 @@ const createValidation = z.object({
   body: TestimonialSchema,
 });
 const updateValidation = z.object({
-  body: TestimonialSchema,
+  body: TestimonialSchema.partial(),
 });
 
 const TestimonialValidation = {
