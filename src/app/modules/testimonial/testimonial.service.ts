@@ -26,7 +26,7 @@ get all function
 const getAllTestimonial = async (query: Record<string, any>) => {
  query.isDeleted = false;
   const { filters, pagination } = await pickQuery(query);
-  const { searchTerm, ...filtersData } = filters;
+  const { searchTerm, isVisible, ...filtersData } = filters;
 
     const where: Prisma.TestimonialWhereInput = {};
 
@@ -42,6 +42,9 @@ const getAllTestimonial = async (query: Record<string, any>) => {
     }));
   }
 
+  if (isVisible !== undefined && isVisible !== null && isVisible !== '') {
+    where.isVisible = isVisible === 'true';
+  }
 
     // Filter conditions
   if (Object.keys(filtersData).length > 0) {
