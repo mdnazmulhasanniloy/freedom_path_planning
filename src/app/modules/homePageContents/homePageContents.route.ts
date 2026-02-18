@@ -20,6 +20,8 @@ router.get('/hero-section', homePageContentsController.getHomePageHeroSection);
 router.put(
   '/service-section',
   auth(USER_ROLE.admin, USER_ROLE.sub_admin, USER_ROLE.super_admin),
+  uploads.single('servicePageImg'),
+  parseData(),
   homePageContentsController.updateHomePageServiceSection,
 );
 router.get(
