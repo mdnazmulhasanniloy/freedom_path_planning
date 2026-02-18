@@ -310,8 +310,7 @@ model homePageHeroSection{
 }
 
 model heroButton {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  key     String @unique @default("main")
+  id String @id @default(auto()) @map("_id") @db.ObjectId 
   index Int?
   title String? 
   link String? 
