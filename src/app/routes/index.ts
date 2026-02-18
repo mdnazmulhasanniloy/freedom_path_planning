@@ -11,6 +11,7 @@ import { downloadsBookRoutes } from '@app/modules/downloadsBook/downloadsBook.ro
 import { footerContentRoutes } from '@app/modules/footerContent/footerContent.route';
 import { freedomPathPlaningRoutes } from '@app/modules/freedomPathPlaning/freedomPathPlaning.route';
 import { generateReportRoutes } from '@app/modules/generateReport/generateReport.route';
+import { homePageContentsRoutes } from '@app/modules/homePageContents/homePageContents.route';
 import { includedServiceRoutes } from '@app/modules/includedService/includedService.route';
 import { otpRoutes } from '@app/modules/otp/otp.routes';
 import serviceRouter from '@app/modules/services/service.routes';
@@ -19,9 +20,14 @@ import { toolResourceRoutes } from '@app/modules/toolResource/toolResource.route
 import { userRoutes } from '@app/modules/users/users.routes';
 import { whatYourClientGetsRoutes } from '@app/modules/whatYourClientGets/whatYourClientGets.route';
 import { Router } from 'express';
+ 
 
 const router = Router();
 const moduleRoutes = [
+  {
+    path: "/homePageContents",
+    route: homePageContentsRoutes,
+  },
   {
     path: '/footer-content',
     route: footerContentRoutes,
