@@ -39,6 +39,13 @@ const getHomePageHeroSection = catchAsync(
 
 const updateHomePageServiceSection = catchAsync(
   async (req: Request, res: Response) => {
+    if (req?.file) {
+      req.body.servicePageImg = await uploadToS3({
+        file: req.file,
+        fileName: `images/homepage/content/${Math.floor(100000 + Math.random() * 900000)}`,
+      });
+    }
+
     const result = await homePageContentsService.updateHomePageServiceSection(
       req.body,
     );

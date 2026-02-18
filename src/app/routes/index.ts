@@ -11,6 +11,7 @@ import { downloadsBookRoutes } from '@app/modules/downloadsBook/downloadsBook.ro
 import { footerContentRoutes } from '@app/modules/footerContent/footerContent.route';
 import { freedomPathPlaningRoutes } from '@app/modules/freedomPathPlaning/freedomPathPlaning.route';
 import { generateReportRoutes } from '@app/modules/generateReport/generateReport.route';
+import { heroButtonRoutes } from '@app/modules/heroButton/heroButton.route';
 import { homePageContentsRoutes } from '@app/modules/homePageContents/homePageContents.route';
 import { includedServiceRoutes } from '@app/modules/includedService/includedService.route';
 import { otpRoutes } from '@app/modules/otp/otp.routes';
@@ -24,6 +25,10 @@ import { Router } from 'express';
 
 const router = Router();
 const moduleRoutes = [
+  {
+    path: "/hero-buttons",
+    route: heroButtonRoutes,
+  },
   {
     path: "/homePageContents",
     route: homePageContentsRoutes,
@@ -108,7 +113,7 @@ const moduleRoutes = [
   {
     path: '/generate-report',
     route: generateReportRoutes,
-  },
+  }
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));
 
