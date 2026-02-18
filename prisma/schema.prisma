@@ -142,6 +142,7 @@ model ToolResource{
   name String
   details String 
   link String  
+  isVisible   Boolean  @default(true)
   isDeleted   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -188,7 +189,7 @@ model Books {
 model Blog {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   title String 
-  subTitle String
+  subTitle String?
   image String 
   details String
   view Int @default(0)
@@ -294,6 +295,110 @@ model FooterContent{
 }
 
 
+model homePageHeroSection{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  tag String?
+  title String? 
+  subtitle String?
+  description String? 
+  heroImg String?
+  floatingCardTitle String?
+  floatingCardShortDescription String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model heroButton {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  index Int
+  title String 
+  link String 
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model homePageServiceSection{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  tag String?
+  title String 
+  subTitle String 
+  servicePageTitle String
+  servicePageDescription String
+  servicePageGradientText String
+  servicePageNormalText String
+  servicePageImg String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+ 
+}
+
+model serviceDetailsPageWhatsIncludedSection{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  tag String 
+  title String 
+  subTitle String  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+model serviceDetailsPageBlogSection{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  tag String 
+  title String 
+  subTitle String  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model resourcesSection{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  tag String 
+  title String 
+  subTitle String  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+
+model resourcesPage {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  gradientText String 
+  title String 
+  image String 
+  description String  
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model learnAndGrowWithOurBooksSection{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  tag String 
+  title String 
+  subTitle String  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model testimonialSection {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+
+  tag String 
+  title String 
+  subTitle String  
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
 enum status {
   active
   blocked
@@ -307,4 +412,4 @@ enum Role {
 }
 
  
- 
+
