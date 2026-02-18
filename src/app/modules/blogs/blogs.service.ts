@@ -24,7 +24,7 @@ get all function
 const getAllBlogs = async (query: Record<string, any>) => {
   query.isDeleted = false;
   const { filters, pagination } = await pickQuery(query);
-  const { searchTerm, ...filtersData } = filters;
+  const { searchTerm, isVisible, ...filtersData } = filters;
 
   const where: Prisma.BlogWhereInput = {};
 
@@ -38,6 +38,10 @@ const getAllBlogs = async (query: Record<string, any>) => {
         mode: 'insensitive',
       },
     }));
+  }
+
+  if (isVisible !== undefined && isVisible !== null && isVisible !== '') {
+    where.isVisible = isVisible === 'true';
   }
 
   // Filter conditions
