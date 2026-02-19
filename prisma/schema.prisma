@@ -393,6 +393,9 @@ model testimonialSection {
   tag String? 
   title String? 
   subTitle String?  
+  homePageVisible Boolean @default(true)
+  aboutPageVisible Boolean @default(true)
+  servicePageVisible Boolean @default(true)
 
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -406,11 +409,23 @@ model servicePageHeroSection {
   leftTitle String? 
   description String? 
   rightGradientText String? 
+  rightNormalText String?
   banner String? 
 
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
+
+model servicepageServiceSection {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  tag String? 
+  title String? 
+  subTitle String?  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
 enum status {
   active
   blocked
