@@ -23,8 +23,14 @@ import { whatYourClientGetsRoutes } from '@app/modules/whatYourClientGets/whatYo
 import { Router } from 'express';
  
 
+import { contactUsPageContentsRoutes } from "../modules/contactUsPageContents/contactUsPageContents.route";
+
 const router = Router();
 const moduleRoutes = [
+  {
+    path: "/contact-us-page-contents",
+    route: contactUsPageContentsRoutes,
+  },
   {
     path: "/hero-buttons",
     route: heroButtonRoutes,

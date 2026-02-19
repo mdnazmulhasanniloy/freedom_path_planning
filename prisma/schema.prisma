@@ -172,6 +172,7 @@ model DownloadsBook {
   book   BookResources @relation(fields: [bookId], references: [id])
 }
 
+
 model Books {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String 
@@ -369,6 +370,9 @@ model resourcesPage {
   key     String @unique @default("main")
   gradientText String? 
   title String? 
+  leftSideTitle String?
+  leftSideSubTitle String?
+
   image String? 
   description String?
 
@@ -422,9 +426,34 @@ model servicepageServiceSection {
   tag String? 
   title String? 
   subTitle String?  
+
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
+
+model contactUsPageContents {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  banner String? 
+  title String? 
+  subTitle String? 
+  
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model resourcesPageEbookSection {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  tag String? 
+  title String? 
+  subTitle String?  
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
 
 enum status {
   active
