@@ -327,7 +327,7 @@ model homePageServiceSection{
   servicePageTitle String?
   servicePageDescription String?
   servicePageGradientText String?
-  servicePageNormalText String
+  servicePageNormalText String?
   servicePageImg String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -398,6 +398,19 @@ model testimonialSection {
   updatedAt         DateTime @updatedAt
 }
 
+
+model servicePageHeroSection {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique @default("main")
+  leftTag String? 
+  leftTitle String? 
+  description String? 
+  rightGradientText String? 
+  banner String? 
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
 enum status {
   active
   blocked
