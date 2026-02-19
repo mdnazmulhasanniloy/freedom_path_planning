@@ -13,6 +13,10 @@ const createBookResources = async (
   if (Array.isArray(payload.image) && payload.image.length > 0) {
     payload['image'] = payload.image[0];
   }
+  if (Array.isArray(payload.file) && payload.file.length > 0) {
+    payload['file'] = payload.file[0];
+  }
+
   const result = await prisma.bookResources.create({
     data: payload,
   });
@@ -117,6 +121,12 @@ const updateBookResources = async (
   id: string,
   payload: Prisma.BookResourcesUpdateInput,
 ) => {
+  if (Array.isArray(payload.image) && payload.image.length > 0) {
+    payload['image'] = payload.image[0];
+  }
+  if (Array.isArray(payload.file) && payload.file.length > 0) {
+    payload['file'] = payload.file[0];
+  }
   const result = await prisma.bookResources.update({
     where: {
       id,
