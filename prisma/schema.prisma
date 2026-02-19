@@ -158,10 +158,10 @@ model BookResources {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  downloads DownloadsBook[]
+  downloads DownloadsBookResources[]
 }
 
-model DownloadsBook {
+model DownloadsBookResources {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   username String
   email String
@@ -173,19 +173,36 @@ model DownloadsBook {
 }
 
 
+
+
 model Books {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String 
   price Int 
-  downloads Int @default(0)
   image String
   url String
   file String
   details String
+
+  
   isDeleted   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  downloads DownloadsBooks[]
+ 
 } 
+
+model DownloadsBooks {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  username String
+  email String
+  company String?
+  bookId String @db.ObjectId
+ createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  book   Books @relation(fields: [bookId], references: [id])
+}
 
 model Blog {
   id String @id @default(auto()) @map("_id") @db.ObjectId

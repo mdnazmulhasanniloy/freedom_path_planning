@@ -25,8 +25,20 @@ import { Router } from 'express';
 
 import { contactUsPageContentsRoutes } from "../modules/contactUsPageContents/contactUsPageContents.route";
 
+import { downloadsResourcesBookRoutes } from "../modules/downloadsResourcesBook/downloadsResourcesBook.route";
+
+import { downloadsBookResourcesRoutes } from "../modules/downloadsBookResources/downloadsBookResources.route";
+
 const router = Router();
 const moduleRoutes = [
+  {
+    path: "/downloadsBookResources",
+    route: downloadsBookResourcesRoutes,
+  },
+  {
+    path: "/downloadsResourcesBook",
+    route: downloadsResourcesBookRoutes,
+  },
   {
     path: "/contact-us-page-contents",
     route: contactUsPageContentsRoutes,

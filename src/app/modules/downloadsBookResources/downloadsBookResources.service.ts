@@ -7,17 +7,17 @@ import { Prisma } from '@prisma/index';
 import httpStatus from 'http-status';
 
 //Create Function
-const createDownloadsBook = async (
-  payload: Prisma.DownloadsBooksCreateInput,
+const createDownloadsBookResources = async (
+  payload: Prisma.DownloadsBookResourcesCreateInput,
 ) => {
-  const result = await prisma.downloadsBooks.create({
+  const result = await prisma.downloadsBookResources.create({
     data: payload,
   });
 
   if (!result) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      'Failed to create downloads books',
+      'Failed to create downloads resources book',
     );
   }
   return result;
@@ -26,11 +26,11 @@ const createDownloadsBook = async (
 /*
 get all function
 */
-const getAllDownloadsBook = async (query: Record<string, any>) => {
+const getAllDownloadsBookResources = async (query: Record<string, any>) => {
   const { filters, pagination } = await pickQuery(query);
   const { searchTerm, ...filtersData } = filters;
 
-  const where: Prisma.DownloadsBooksWhereInput = {};
+  const where: Prisma.DownloadsBookResourcesWhereInput = {};
 
   /*
    * enter here search input filed
@@ -61,7 +61,7 @@ const getAllDownloadsBook = async (query: Record<string, any>) => {
   const { page, limit, skip, sort } =
     paginationHelper.calculatePagination(pagination);
 
-  const orderBy: Prisma.DownloadsBooksOrderByWithRelationInput[] = sort
+  const orderBy: Prisma.DownloadsBookResourcesOrderByWithRelationInput[] = sort
     ? sort.split(',').map(field => {
         const trimmed = field.trim();
         if (trimmed.startsWith('-')) {
@@ -73,7 +73,7 @@ const getAllDownloadsBook = async (query: Record<string, any>) => {
 
   try {
     // Fetch data
-    const data = await prisma.downloadsBooks.findMany({
+    const data = await prisma.downloadsBookResources.findMany({
       where,
       skip,
       take: limit,
@@ -83,7 +83,7 @@ const getAllDownloadsBook = async (query: Record<string, any>) => {
       },
     });
 
-    const total = await prisma.downloadsBooks.count({ where });
+    const total = await prisma.downloadsBookResources.count({ where });
 
     return {
       data,
@@ -94,9 +94,9 @@ const getAllDownloadsBook = async (query: Record<string, any>) => {
   }
 };
 
-const getDownloadsBookById = async (id: string) => {
+const getDownloadsBookResourcesById = async (id: string) => {
   try {
-    const result = await prisma.downloadsBooks.findUnique({
+    const result = await prisma.downloadsBookResources.findUnique({
       where: {
         id,
       },
@@ -105,7 +105,7 @@ const getDownloadsBookById = async (id: string) => {
       },
     });
 
-    if (!result) throw new Error('DownloadsBooks not found!');
+    if (!result) throw new Error('DownloadsBookResources not found!');
 
     return result;
   } catch (error: any) {
@@ -114,24 +114,24 @@ const getDownloadsBookById = async (id: string) => {
 };
 
 // update
-const updateDownloadsBook = async (
+const updateDownloadsBookResources = async (
   id: string,
-  payload: Prisma.DownloadsBooksUpdateInput,
+  payload: Prisma.DownloadsBookResourcesUpdateInput,
 ) => {
-  const result = await prisma.downloadsBooks.update({
+  const result = await prisma.downloadsBookResources.update({
     where: {
       id,
     },
     data: payload,
   });
 
-  if (!result) throw new Error('Failed to update DownloadsBooks');
+  if (!result) throw new Error('Failed to update DownloadsBookResources');
 
   return result;
 };
 
-const deleteDownloadsBook = async (id: string) => {
-  const result = await prisma.downloadsBooks.delete({
+const deleteDownloadsBookResources = async (id: string) => {
+  const result = await prisma.downloadsBookResources.delete({
     where: {
       id,
     },
@@ -140,16 +140,16 @@ const deleteDownloadsBook = async (id: string) => {
   if (!result)
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      'Failed to delete downloadsBooks',
+      'Failed to delete downloadsBookResources',
     );
 
   return result;
 };
 
-export const downloadsBookService = {
-  createDownloadsBook,
-  getAllDownloadsBook,
-  getDownloadsBookById,
-  updateDownloadsBook,
-  deleteDownloadsBook,
+export const downloadsBookResourcesService = {
+  createDownloadsBookResources,
+  getAllDownloadsBookResources,
+  getDownloadsBookResourcesById,
+  updateDownloadsBookResources,
+  deleteDownloadsBookResources,
 };
