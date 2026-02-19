@@ -28,7 +28,7 @@ const router = Router();
 
 const moduleRoutes = [
   {
-    path: '/downloadsBookResources',
+    path: '/downloads-book-resources',
     route: downloadsBookResourcesRoutes,
   },
 
