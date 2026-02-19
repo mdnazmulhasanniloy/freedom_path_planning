@@ -22,27 +22,26 @@ import { testimonialRoutes } from '@app/modules/testimonial/testimonial.route';
 import { toolResourceRoutes } from '@app/modules/toolResource/toolResource.route';
 import { userRoutes } from '@app/modules/users/users.routes';
 import { whatYourClientGetsRoutes } from '@app/modules/whatYourClientGets/whatYourClientGets.route';
-import { Router } from 'express'; 
- 
- 
+import { Router } from 'express';
 
 const router = Router();
+
 const moduleRoutes = [
   {
-    path: "/downloadsBookResources",
+    path: '/downloadsBookResources',
     route: downloadsBookResourcesRoutes,
   },
- 
+
   {
-    path: "/contact-us-page-contents",
+    path: '/contact-us-page-contents',
     route: contactUsPageContentsRoutes,
   },
   {
-    path: "/hero-buttons",
+    path: '/hero-buttons',
     route: heroButtonRoutes,
   },
   {
-    path: "/homePageContents",
+    path: '/homePageContents',
     route: homePageContentsRoutes,
   },
   {
@@ -125,7 +124,7 @@ const moduleRoutes = [
   {
     path: '/generate-report',
     route: generateReportRoutes,
-  }
+  },
 ];
 moduleRoutes.forEach(route => router.use(route.path, route.route));
 
