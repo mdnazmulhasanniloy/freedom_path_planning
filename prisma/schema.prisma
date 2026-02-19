@@ -172,9 +172,6 @@ model DownloadsBookResources {
   book   BookResources @relation(fields: [bookId], references: [id])
 }
 
-
-
-
 model Books {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String 
@@ -460,16 +457,16 @@ model contactUsPageContents {
   updatedAt         DateTime @updatedAt
 }
 
-model resourcesPageEbookSection {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  key     String @unique @default("main")
-  tag String? 
-  title String? 
-  subTitle String?  
+// model resourcesPageEbookSection {
+//   id String @id @default(auto()) @map("_id") @db.ObjectId
+//   key     String @unique @default("main")
+//   tag String? 
+//   title String? 
+//   subTitle String?  
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-}
+//   createdAt         DateTime @default(now())
+//   updatedAt         DateTime @updatedAt
+// }
 
 
 enum status {
