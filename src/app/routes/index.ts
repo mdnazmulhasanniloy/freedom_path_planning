@@ -5,9 +5,11 @@ import { authRoutes } from '@app/modules/auth/auth.route';
 import { blogsRoutes } from '@app/modules/blogs/blogs.route';
 import { bookResourcesRoutes } from '@app/modules/bookResources/bookResources.route';
 import { booksRoutes } from '@app/modules/books/books.route';
+import { contactUsPageContentsRoutes } from '@app/modules/contactUsPageContents/contactUsPageContents.route';
 import { contentsRoutes } from '@app/modules/contents/contents.route';
 import { dashboardRoutes } from '@app/modules/dashboard/dashboard.route';
 import { downloadsBookRoutes } from '@app/modules/downloadsBook/downloadsBook.route';
+import { downloadsBookResourcesRoutes } from '@app/modules/downloadsBookResources/downloadsBookResources.route';
 import { footerContentRoutes } from '@app/modules/footerContent/footerContent.route';
 import { freedomPathPlaningRoutes } from '@app/modules/freedomPathPlaning/freedomPathPlaning.route';
 import { generateReportRoutes } from '@app/modules/generateReport/generateReport.route';
@@ -20,14 +22,9 @@ import { testimonialRoutes } from '@app/modules/testimonial/testimonial.route';
 import { toolResourceRoutes } from '@app/modules/toolResource/toolResource.route';
 import { userRoutes } from '@app/modules/users/users.routes';
 import { whatYourClientGetsRoutes } from '@app/modules/whatYourClientGets/whatYourClientGets.route';
-import { Router } from 'express';
+import { Router } from 'express'; 
  
-
-import { contactUsPageContentsRoutes } from "../modules/contactUsPageContents/contactUsPageContents.route";
-
-import { downloadsResourcesBookRoutes } from "../modules/downloadsResourcesBook/downloadsResourcesBook.route";
-
-import { downloadsBookResourcesRoutes } from "../modules/downloadsBookResources/downloadsBookResources.route";
+ 
 
 const router = Router();
 const moduleRoutes = [
@@ -35,10 +32,7 @@ const moduleRoutes = [
     path: "/downloadsBookResources",
     route: downloadsBookResourcesRoutes,
   },
-  {
-    path: "/downloadsResourcesBook",
-    route: downloadsResourcesBookRoutes,
-  },
+ 
   {
     path: "/contact-us-page-contents",
     route: contactUsPageContentsRoutes,
