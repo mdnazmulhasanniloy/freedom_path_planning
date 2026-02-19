@@ -8,8 +8,12 @@ import httpStatus from 'http-status';
 
 //Create Function
 const createBooks = async (payload: Prisma.BooksCreateInput) => {
-  payload.file = payload.file[0];
-  payload.image = payload.image[0];
+  if (Array.isArray(payload.image) && payload.image.length > 0) {
+    payload['image'] = payload.image[0];
+  }
+  if (Array.isArray(payload.file) && payload.file.length > 0) {
+    payload['file'] = payload.file[0];
+  }
   const result = await prisma.books.create({
     data: payload,
   });
@@ -107,6 +111,12 @@ const getBooksById = async (id: string) => {
 
 // update
 const updateBooks = async (id: string, payload: Prisma.BooksUpdateInput) => {
+  if (Array.isArray(payload.image) && payload.image.length > 0) {
+    payload['image'] = payload.image[0];
+  }
+  if (Array.isArray(payload.file) && payload.file.length > 0) {
+    payload['file'] = payload.file[0];
+  }
   const result = await prisma.books.update({
     where: {
       id,
