@@ -10,6 +10,9 @@ import httpStatus from 'http-status';
 const createBookResources = async (
   payload: Prisma.BookResourcesCreateInput,
 ) => {
+  if (Array.isArray(payload.image) && payload.image.length > 0) {
+    payload['image'] = payload.image[0];
+  }
   const result = await prisma.bookResources.create({
     data: payload,
   });
