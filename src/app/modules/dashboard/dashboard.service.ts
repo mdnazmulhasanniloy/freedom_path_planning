@@ -9,7 +9,7 @@ const dashboardCards = async () => {
     _sum: { view: true },
   });
 
-  const downloadsData = await prisma.downloadsBook.aggregate({
+  const downloadsData = await prisma.downloadsBooks.aggregate({
     _count: { id: true },
   });
 

@@ -36,7 +36,7 @@ const getAllDownloadsBook = async (query: Record<string, any>) => {
    * enter here search input filed
    */
   if (searchTerm) {
-    where.OR = [].map(field => ({
+    where.OR = ['username'].map(field => ({
       [field]: {
         contains: searchTerm,
         mode: 'insensitive',
