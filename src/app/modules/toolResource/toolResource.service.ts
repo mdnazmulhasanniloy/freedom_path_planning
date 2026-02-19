@@ -26,7 +26,7 @@ get all function
 const getAllToolResource = async (query: Record<string, any>) => {
  query.isDeleted = false;
   const { filters, pagination } = await pickQuery(query);
-  const { searchTerm, ...filtersData } = filters;
+  const { searchTerm,isVisible, ...filtersData } = filters;
 
     const where: Prisma.ToolResourceWhereInput = {};
 
@@ -41,6 +41,10 @@ const getAllToolResource = async (query: Record<string, any>) => {
       },
     }));
   }
+
+   if (isVisible !== undefined && isVisible !== null && isVisible !== '') {
+     where.isVisible = isVisible === 'true';
+   }
 
 
     // Filter conditions
