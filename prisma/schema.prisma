@@ -65,7 +65,7 @@ model Verification {
 model Service {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   serviceName  String
-  subTitle     String
+  subTitle     String 
   image        String
   isDeleted    Boolean  @default(false)
   createdAt    DateTime @default(now())
@@ -79,6 +79,7 @@ model Service {
 model WhatYourClientGets {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   serviceId  String   @unique @db.ObjectId
+  title     String
   image      String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
