@@ -79,7 +79,7 @@ model Service {
 model WhatYourClientGets {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   serviceId  String   @unique @db.ObjectId
-  title     String
+  title     String?
   image      String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -92,7 +92,7 @@ model WhatYourClientGets {
 // What Your Client Gets Items 
 model WhatYourClientGetsItem {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
+  title     String?
   subTitle  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
