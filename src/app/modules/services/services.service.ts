@@ -36,6 +36,7 @@ const createService = async (payload: any) => {
           ? {
               create: {
                 image: clientGetsImage[0],
+                title: whatYourClientGets.title,
                 options: {
                   create: whatYourClientGets.options?.map((opt: any) => ({
                     title: opt.title,
