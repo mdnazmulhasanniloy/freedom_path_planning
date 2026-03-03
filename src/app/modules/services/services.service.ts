@@ -158,7 +158,9 @@ const updateService = async (serviceId: string, payload: any) => {
                   ...(clientGetsImage?.length > 0 && {
                     image: clientGetsImage[0],
                   }),
-
+                  ...(whatYourClientGets.title && {
+                    title: whatYourClientGets.title,
+                  }),
                   options: {
                     deleteMany: {
                       id: { in: deleteOptionIds },
