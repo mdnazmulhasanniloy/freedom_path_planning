@@ -2,9 +2,12 @@
 import AppError from '@app/error/AppError';
 import { paginationHelper } from '@app/helpers/pagination.helpers';
 import prisma from '@app/shared/prisma';
+import { sendEmail } from '@app/utils/mailSender';
 import pickQuery from '@app/utils/pickQuery';
 import { Prisma } from '@prisma/index';
 import httpStatus from 'http-status';
+import path from 'path';
+import fs from 'fs';
 
 //Create Function
 const createDownloadsBook = async (
@@ -12,6 +15,9 @@ const createDownloadsBook = async (
 ) => {
   const result = await prisma.downloadsBooks.create({
     data: payload,
+    include: {
+      book: true,
+    },
   });
 
   if (!result) {
@@ -20,6 +26,23 @@ const createDownloadsBook = async (
       'Failed to create downloads books',
     );
   }
+
+  const otpEmailPath = path.join(
+    __dirname,
+    '../../../../public/view/book_download.html',
+  );
+
+  await sendEmail(
+    payload?.email,
+    'support message',
+    fs
+      .readFileSync(otpEmailPath, 'utf8')
+      .replace('{{username}}', result.username)
+      .replace('{{email}}', result.email)
+      .replace('{{company}}', payload?.company ? payload?.company : 'N/A')
+      .replace('{{bookName}}', result.book.name),
+  );
+
   return result;
 };
 

@@ -53,7 +53,7 @@ const getContents = async (query: Record<string, any>) => {
 const contactUs = async (payload: ISupport) => {
   const otpEmailPath = path.join(
     __dirname,
-    '../../../../public/view/otp_mail.html',
+    '../../../../public/view/contact_us.html',
   );
 
   await sendEmail(
@@ -64,7 +64,7 @@ const contactUs = async (payload: ISupport) => {
       .replace('{{name}}', payload.name)
       .replace('{{email}}', payload?.email)
       .replace('{{phoneNumber}}', payload?.phoneNumber)
-      .replace('{{message}}', payload?.message)
+      .replace('{{message}}', payload?.message),
   );
 };
 
