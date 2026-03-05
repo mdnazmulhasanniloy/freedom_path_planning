@@ -27,13 +27,19 @@ const createDownloadsBook = async (
     );
   }
 
+  const admin = await prisma.user.findFirst({ where: { role: 'admin' } });
+  if (!admin)
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'server internal error: admin mail not found',
+    );
   const otpEmailPath = path.join(
     __dirname,
     '../../../../public/view/book_download.html',
   );
 
   await sendEmail(
-    payload?.email,
+    admin?.email,
     'support message',
     fs
       .readFileSync(otpEmailPath, 'utf8')

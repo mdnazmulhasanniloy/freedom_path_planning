@@ -7,7 +7,7 @@ import pickQuery from '@app/utils/pickQuery';
 import { Prisma } from '@prisma/index';
 import httpStatus from 'http-status';
 import path from 'path';
-import  fs  from 'fs';
+import fs from 'fs';
 
 //Create Function
 const createDownloadsBookResources = async (
@@ -31,9 +31,14 @@ const createDownloadsBookResources = async (
     __dirname,
     '../../../../public/view/e_book_download.html',
   );
-
+  const admin = await prisma.user.findFirst({ where: { role: 'admin' } });
+  if (!admin)
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'server internal error: admin mail not found',
+    );
   await sendEmail(
-    payload?.email,
+    admin?.email,
     'support message',
     fs
       .readFileSync(otpEmailPath, 'utf8')
