@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'fs';
 import path from 'path';
-import { PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { IGenerateReport } from './generateReport.interface';
 import { uploadToS3 } from '@app/utils/s3';
 import moment from 'moment';
@@ -69,6 +69,42 @@ const formatUSD = (value: number | string): string => {
   })}`;
 };
 
+/*-------------------------------------------
+for set score color
+-------------------------------------------- */
+
+// Function to set score text and color
+// Safe Score Color Setter
+const drawScoreWithColor = async (
+  pdfDoc: PDFDocument,
+  pageIndex: number,
+  score: number,
+  x: number,
+  y: number,
+  fontSize = 32,
+) => {
+  const page = pdfDoc.getPages()[pageIndex];
+  const safeScore = Math.round(Math.min(Math.max(score, 0), 100));
+
+  const color =
+    safeScore <= 49
+      ? rgb(1, 0, 0)
+      : safeScore <= 79
+        ? rgb(1, 0.8, 0)
+        : rgb(0, 0.6, 0);
+
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  page.drawText(safeScore.toString(), {
+    x,
+    y,
+    size: fontSize,
+    font,
+    color,
+  });
+};
+// =================================== main function =================================
+
 export const fillFreedomPdf = async (
   data: IGenerateReport,
 ): Promise<UploadResult | undefined> => {
@@ -88,6 +124,7 @@ export const fillFreedomPdf = async (
     /* ---------- Page 1 ---------- */
     form.getTextField('date').setText(date);
     form.getTextField('name').setText(data?.name ?? '');
+    form.getTextField('first_name').setText(data?.name?.split(' ')[0] ?? '');
 
     const desiredAnnualIncome = Number(data?.desiredAnnualIncome || 0);
     const nonInvestmentIncome = Number(data?.expectedNonInvestmentIncome || 0);
@@ -125,7 +162,7 @@ export const fillFreedomPdf = async (
     form.getTextField('outstanding_personal').setText(formatUSD(personalDebts));
 
     const gapToReachTheFreedomPoint =
-      assetsRequiredAssuming - (currentWealth + personalDebts);
+      assetsRequiredAssuming + personalDebts - currentWealth;
 
     form
       .getTextField('gap_to_reach_the_freedom_point')
@@ -211,11 +248,30 @@ export const fillFreedomPdf = async (
         ? 0
         : (currentWealth / assetsRequiredAssuming) * 100;
 
-    form.getTextField('score').setText(score.toFixed(0));
-    // form.getTextField('score_2').setText(score.toFixed(0));
+    // form.getTextField('score').setText(score.toFixed(0));
+
+    // -------------- set score value with color
+    // setScoreField(pdfDoc, form, 'score', score);
+
+    /* ---------- Score ---------- */
+
+    // const rawScore =
+    //   assetsRequiredAssuming && currentWealth
+    //     ? (Number(currentWealth) / Number(assetsRequiredAssuming)) * 100
+    //     : 0;
+
+    await drawScoreWithColor(pdfDoc, 3, score, 440, 510, 48);
+
+    form.getTextField('score_2').setText(score.toFixed(0));
     form
       .getTextField('score_name')
       .setText(`${data?.name ?? ''} by Steve DeTray`);
+
+    for (let i = 2; i <= 18; i++) {
+      form
+        .getTextField(`score_name_${i}`)
+        .setText(`${data?.name ?? ''} by Steve DeTray`);
+    }
 
     /* ---------- Gauge ---------- */
     const page4Index = 3;
