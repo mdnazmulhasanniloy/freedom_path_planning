@@ -15,7 +15,7 @@ export const generateReport = async (payload: IGenerateReport) => {
       email: payload.email,
       pdf: pdf?.uploadSingle as string,
       pdfForUser: pdf?.uploadPage as string,
-    }; 
+    };
     const result = await prisma.reportGenerate.create({
       data: data,
     });

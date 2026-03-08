@@ -28,9 +28,8 @@ export const uploadToS3 = async ({
     ContentType: contentType || file.mimetype,
     ACL: ObjectCannedACL.public_read, //access public read
   });
-  console.log(command);
   try {
-    const key = await s3Client.send(command); 
+    const key = await s3Client.send(command);
 
     if (!key) {
       throw new AppError(httpStatus.BAD_REQUEST, 'File Upload failed');
@@ -39,7 +38,6 @@ export const uploadToS3 = async ({
 
     return url;
   } catch (error) {
-    console.log(error);
     throw new AppError(httpStatus.BAD_REQUEST, 'File Upload failed');
   }
 };
